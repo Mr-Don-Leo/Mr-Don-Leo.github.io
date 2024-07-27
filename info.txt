@@ -39,3 +39,9 @@ Social Media Links: Provide links to your professional social media profiles (Li
 Additional Contact Info: If relevant, include any other ways to contact you (e.g., a phone number, mailing address, or business contact information).
 
 4. blog-post.html
+
+
+
+HEX
+
+The yellow in the logo #fed150

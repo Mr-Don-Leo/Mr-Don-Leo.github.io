@@ -1,124 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Welcome to My Website</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			background-color: #f2f2f2;
-			margin: 0;
-			padding: 0;
-		}
-
-		header {
-			background-color: #333;
-			color: #fff;
-			padding: 20px;
-		}
-
-		nav ul {
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-		}
-
-		nav ul li {
-			display: inline;
-			margin-right: 10px;
-		}
-
-		nav ul li a {
-			color: #fff;
-			text-decoration: none;
-		}
-
-		section {
-			padding: 20px;
-			margin-bottom: 20px;
-			background-color: #fff;
-			border-radius: 5px;
-		}
-
-		section h1, section h2, section h3 {
-			color: #333;
-		}
-
-		.project, .blog-post {
-			margin-bottom: 20px;
-		}
-
-		.project h3, .blog-post h3 {
-			margin-top: 0;
-		}
-
-		.call-to-action {
-			background-color: #f2f2f2;
-			text-align: center;
-			padding: 40px;
-		}
-
-		footer {
-			background-color: #333;
-			color: #fff;
-			padding: 20px;
-			text-align: center;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Template</title>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<header>
-		<nav>
-			<ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="about.html">About</a></li>
-				<li><a href="contact.html">Contact</a></li>
-				<li><a href="blog.html">Blog</a></li>
-			</ul>
-		</nav>
-	</header>
-
-	<section id="intro">
-		<h1>Welcome to My Website</h1>
-		<p>Hi, I'm [Your Name] and I'm a [Your Profession]. I'm passionate about [Your Field] and I love creating [Your Field]-related projects that make a difference.</p>
-	</section>
-
-	<section id="projects">
-		<h2>Highlighted Projects</h2>
-		<div class="project">
-			<h3>Project 1</h3>
-			<p>Description of Project 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			<a href="project1.html">Read More</a>
-		</div>
-		<div class="project">
-			<h3>Project 2</h3>
-			<p>Description of Project 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			<a href="project2.html">Read More</a>
-		</div>
-	</section>
-
-	<section id="call-to-action">
-		<h2>Get in Touch</h2>
-		<p>Interested in working together or have any questions? Feel free to reach out to me.</p>
-		<a href="contact.html">Contact Me</a>
-	</section>
-
-	<section id="blog-posts">
-		<h2>Recent Blog Posts</h2>
-		<div class="blog-post">
-			<h3>Blog Post 1</h3>
-			<p>Summary of Blog Post 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			<a href="blogpost1.html">Read More</a>
-		</div>
-		<div class="blog-post">
-			<h3>Blog Post 2</h3>
-			<p>Summary of Blog Post 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			<a href="blogpost2.html">Read More</a>
-		</div>
-	</section>
-
-	<footer>
-		<p>&copy; 2022 [Your Name]. All rights reserved.</p>
-	</footer>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fed150; padding: 15px 20px;">
+    <div class="container" style="max-width: 100%;">
+      <div class="logo" id="logo">
+        <img src="assets/logo.jpeg" alt="Company Logo">
+      </div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
