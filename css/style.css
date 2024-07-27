@@ -1,46 +1,114 @@
+/* logo */
+
 .logo {
 	display: inline-block;
 	border: 5px solid #ddb549;
 	border-radius: 50%;
 	transition: transform 0.5s ease-in-out;
-  }
-  
+}
+
+.d-flex.align-items-center {
+	display: flex;
+	align-items: center;
+}
+
+.logo-text {
+	padding-left: 25px;
+	font-size: 1.1em;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: bold;
+	color: #333;
+}
+
 .logo img {
-	width: 50px; 
+	width: 50px;
 	height: auto;
 	border-radius: 50%;
-  }
+}
 
 .logo:hover {
 	transform: rotate(360deg);
 }
 
 .logo.spin-away {
-    transform: rotate(720deg) scale(0); 
-    transition: transform 1s ease-in-out;
+	transform: rotate(720deg) scale(0);
+	transition: transform 1s ease-in-out;
 }
 
 @keyframes roll-in {
 	0% {
-	  transform: translateX(-100%) rotate(-360deg);
+		transform: translateX(-100%) rotate(-360deg);
 	}
 	100% {
-	  transform: translateX(0) rotate(0);
+		transform: translateX(0) rotate(0);
 	}
 }
-  
+
 .roll-in {
 	animation: roll-in 1s ease-out;
 }
 
+
+/* Navbar */
+
+.navbar {
+    height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar .navbar-brand {
+    line-height: 20px;
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    margin-left: auto;
+}
+
+.navbar .navbar-nav .nav-link {
+    line-height: 20px;
+}
+
 .nav-item {
-	padding-right: 15px;
-	padding-left: 15px;
+    padding: 0 15px;
 }
 
 .nav-item:hover {
-	background-color: #b2923a;
-	color: #333;
-	border-radius: 5px; 
+    background-color: #b2923a;
+    color: #333;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Island Block Introduction */
+
+.island-block-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    padding: 20px;
+    margin-top: 50px; /* Add margin to push it down slightly from the top */
+    flex-wrap: wrap; /* Allow wrapping for smaller viewports */
+}
+
+.island-block {
+    background-color: #f0f0f0;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    max-width: 600px;
+    text-align: center;
+    flex: 1; /* Allow the block to auto-size */
+}
+
+
+/* Headers and other Texts */
+
+.introduction-block-header {
+	font-size: 2em;
 	font-weight: bold;
+	font-family: 'Courier New', Courier, monospace;
+	color: #333;
 }
