@@ -26,7 +26,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(2px); 
+    backdrop-filter: blur(3px); 
     z-index: -1;
     pointer-events: none; 
 }
@@ -35,7 +35,18 @@ body, html {
     margin: 50px;
 }
 
+.github-link {
+    color: inherit; 
+    text-decoration: none; 
+}
+  
+.github-link:hover {
+    text-decoration: underline;
+}
+
+
 /* Logo */
+
 
 .logo {
 	display: inline-block;
@@ -88,6 +99,7 @@ body, html {
 
 /* Navbar */
 
+
 .navbar {
     height: 80px;
     display: flex;
@@ -108,7 +120,7 @@ body, html {
 }
 
 .nav-item {
-    padding: 0 15px;
+    padding: 0 5px;
 }
 
 .nav-item:hover {
@@ -118,20 +130,22 @@ body, html {
     font-weight: bold;
 }
 
+
 /* Island Block Introduction */
+
 
 .island-block-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items to the top */
+    align-items: flex-start; 
     padding: 20px;
-    margin-top: 50px; /* Add margin to push it down slightly from the top */
-    flex-wrap: wrap; /* Allow wrapping for smaller viewports */
+    margin-top: 50px; 
+    flex-wrap: wrap; 
 }
 
 .island-block {
-    background-color: rgb(152, 152, 152);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 8px;
+    background-color: #BDB76B;
+    box-shadow: 0 0 100px 0px rgba(189, 183, 107, .7); /* Adjust the spread radius and color opacity for the fade effect */
     max-width: 800px;
     text-align: center;
     border-radius: 15px;
@@ -151,47 +165,3 @@ body, html {
 
 /* Block banner Nav Explanation */
 
-.introduction-block-header {
-	font-size: 2em;
-	font-weight: bold;
-	font-family: 'Courier New', Courier, monospace;
-	color: #333;
-}
-
-.banner-block {
-    background-color: rgb(152, 152, 152);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-.banner-block h2 {
-    margin-top: 20px;
-    font-size: 1.5em;
-    font-weight: bold;
-    font-family: "Courier New", Courier, monospace;
-    color: rgb(51, 51, 51);
-    text-align: center;
-}
-
-.banner-inner-block {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-.banner-block h3 {
-    font-size: 1.2em;
-    font-weight: bold;
-    font-family: "Courier New", Courier, monospace;
-    color: rgb(51, 51, 51);
-    text-align: center;
-    text-decoration: underline;
-}
-
-.banner-block p {
-    font-size: 1em;
-    color: rgb(51, 51, 51);
-    text-align: center;
-}

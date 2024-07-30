@@ -1,20 +1,25 @@
+
+
+const islandBlock = document.querySelector('.island-block');
+const logo = document.getElementById('logo');
+const canvas = document.getElementById('codeCanvas');
+const ctx = canvas.getContext('2d');
+
 document.addEventListener('DOMContentLoaded', function() {
-    const logo = document.getElementById('logo');
     logo.addEventListener('click', handleLogoClick);
-
-    const islandBlock = document.querySelector('.island-block');
-
     islandBlock.addEventListener('mousemove', handleMouseMove);
     islandBlock.addEventListener('mouseleave', handleMouseLeave);
 
-    const canvas = document.getElementById('codeCanvas');
-    const ctx = canvas.getContext('2d');
+    initializeCanvas();
+});
 
+function initializeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     const lines = [];
-    const maxLines = 500;
+    const isMobile = window.innerWidth < 768;
+    const maxLines = isMobile ? 200 : 500;
     const lineHeight = 20;
 
     function getRandomCode() {
@@ -27,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             text: getRandomCode(),
-            speed: Math.random() * 3 + 1
+            speed: Math.random() * (isMobile ? 1 : 3) + 1
         };
     }
 
@@ -57,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     draw();
-});
+}
 
 function handleLogoClick() {
     this.classList.remove('roll-in');
@@ -83,3 +88,9 @@ function handleMouseLeave(e) {
     const islandBlock = e.currentTarget;
     // islandBlock.style.transform = 'translate(0, 0)';
 }
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+      placement: 'bottom'
+    });
+  });

@@ -45,3 +45,5 @@ Additional Contact Info: If relevant, include any other ways to contact you (e.g
 HEX
 
 The yellow in the logo #fed150
+
+Yellow island banner: #BDB76B
