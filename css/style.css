@@ -1,4 +1,6 @@
-/* logo */
+
+/* Others */
+
 body, html {
     margin: 0;
     padding: 0;
@@ -28,6 +30,12 @@ body, html {
     z-index: -1;
     pointer-events: none; 
 }
+
+.spacer {
+    margin: 50px;
+}
+
+/* Logo */
 
 .logo {
 	display: inline-block;
@@ -122,18 +130,26 @@ body, html {
 }
 
 .island-block {
-    background-color: #f0f0f0;
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgb(152, 152, 152);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 8px;
+    max-width: 800px;
+    text-align: center;
+    border-radius: 15px;
     padding: 20px;
     margin: 20px;
-    max-width: 600px;
-    text-align: center;
-    flex: 1; /* Allow the block to auto-size */
+    flex: 1 1 0%;
+    transition: transform 0.3s ease 0s;
+}
+
+.block-header {
+    font-size: 2em;
+    font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
+    color: rgb(51, 51, 51);
 }
 
 
-/* Headers and other Texts */
+/* Block banner Nav Explanation */
 
 .introduction-block-header {
 	font-size: 2em;
@@ -143,12 +159,39 @@ body, html {
 }
 
 .banner-block {
-    background-color: #f0f0f0;
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgb(152, 152, 152);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+    display: flex;
+    flex-direction: column;
     padding: 20px;
-    margin: 20px;
-    max-width: 600px;
+}
+
+.banner-block h2 {
+    margin-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
+    color: rgb(51, 51, 51);
     text-align: center;
-    flex: 1; /* Allow the block to auto-size */
+}
+
+.banner-inner-block {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.banner-block h3 {
+    font-size: 1.2em;
+    font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
+    color: rgb(51, 51, 51);
+    text-align: center;
+    text-decoration: underline;
+}
+
+.banner-block p {
+    font-size: 1em;
+    color: rgb(51, 51, 51);
+    text-align: center;
 }
