@@ -17,6 +17,9 @@ function initializeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    console.log(window.innerHeight);
+    console.log(window.innerWidth);
+
     const lines = [];
     const isMobile = window.innerWidth < 768;
     const maxLines = isMobile ? 200 : 500;
