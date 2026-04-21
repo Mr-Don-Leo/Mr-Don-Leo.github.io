@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Image Converter — convert, resize, and compress images right in your browser." />
+  <title>Image Converter — Don Leo</title>
+  <link rel="icon" type="image/png" href="../Images/logo2.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dp-black':  '#0a0a0a',
+            'dp-navy':   '#0f0e32',
+            'dp-purple': '#342048',
+            'dp-blue':   '#2c2a7b',
+            'accent':    '#a855f7',
+            'accent-2':  '#c026d3',
+            'neon':      '#d946ef',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    /* ── Upload drop zone ── */
+    .drop-zone {
+      border: 2px dashed rgba(168, 85, 247, 0.35);
+      border-radius: 1.25rem;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      background: rgba(168, 85, 247, 0.04);
+      position: relative;
+    }
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: rgba(168, 85, 247, 0.75);
+      background: rgba(168, 85, 247, 0.09);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .drop-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .drop-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
+    }
+    .drop-hint {
+      font-size: 0.8rem;
+      color: rgba(196, 181, 253, 0.5);
+    }
+
+    /* ── Converter layout ── */
+    .converter-wrap {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── Preview images ── */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 600px) {
+      .preview-grid { grid-template-columns: 1fr; }
+    }
+    .preview-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    .preview-box img {
+      max-width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      border-radius: 0.6rem;
+      display: block;
+      margin: 0 auto 0.75rem;
+    }
+    .preview-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(196,181,253,0.5);
+      margin-bottom: 0.35rem;
+    }
+    .preview-info {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .preview-info strong { color: var(--accent); }
+
+    /* ── Controls panel ── */
+    .controls-panel {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      margin-top: 1.5rem;
+    }
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .control-row:last-child { margin-bottom: 0; }
+    .control-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(196,181,253,0.55);
+      min-width: 80px;
+    }
+
+    /* Format pills */
+    .format-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .format-pill {
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(168,85,247,0.3);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .format-pill:hover {
+      border-color: rgba(168,85,247,0.6);
+      color: var(--text-primary);
+    }
+    .format-pill.active {
+      background: rgba(168,85,247,0.28);
+      border-color: rgba(168,85,247,0.7);
+      color: var(--text-primary);
+      box-shadow: 0 0 12px rgba(168,85,247,0.25);
+    }
+
+    /* Quality slider */
+    .quality-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 180px;
+    }
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 9999px;
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 82%), rgba(168,85,247,0.2) var(--pct, 82%));
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(168,85,247,0.6);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+    .quality-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Resize inputs */
+    .resize-inputs {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .resize-inputs input[type="number"] {
+      width: 90px;
+      padding: 0.45rem 0.75rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(168,85,247,0.22);
+      border-radius: 0.6rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .resize-inputs input[type="number"]:focus {
+      border-color: rgba(168,85,247,0.6);
+      box-shadow: 0 0 0 3px rgba(168,85,247,0.1);
+    }
+    .resize-inputs input[type="number"]::placeholder { color: rgba(196,181,253,0.3); }
+    .resize-sep {
+      color: rgba(196,181,253,0.4);
+      font-size: 0.85rem;
+    }
+    .lock-btn {
+      padding: 0.4rem 0.65rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(168,85,247,0.22);
+      border-radius: 0.6rem;
+      color: rgba(196,181,253,0.55);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .lock-btn.locked {
+      border-color: rgba(168,85,247,0.55);
+      color: var(--accent);
+      background: rgba(168,85,247,0.1);
+    }
+
+    /* Convert button area */
+    .convert-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Size delta badge */
+    .size-delta {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      margin-left: 0.4rem;
+    }
+    .size-delta.smaller {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+    }
+    .size-delta.larger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+    }
+
+    /* Error banner */
+    .error-banner {
+      display: none;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 0.75rem;
+      padding: 0.85rem 1.2rem;
+      color: #fca5a5;
+      font-size: 0.88rem;
+      margin-top: 1rem;
+    }
+    .error-banner.show { display: block; }
+
+    /* Disabled items in dropdown should be removed */
+    .disabled-item {
+      pointer-events: none;
+      color: rgba(196, 181, 253, 0.35);
+      font-style: italic;
+      font-size: 0.8rem;
+      padding: 0.5rem 1rem;
+      display: block;
+    }
+
+    /* Section max-width override for converter */
+    .converter-section .section-inner {
+      max-width: 900px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       HEADER / NAV
+       ========================================== -->
+  <header id="site-header">
+    <a href="../index.html" class="nav-logo">
+      <img src="../Images/logo2.png" alt="Don Leo" class="nav-logo-img" />
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+
+        <li class="dropdown">
+          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            Features <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="image-converter.html" role="menuitem" class="active">Image Converter</a>
+            <hr />
+            <a href="../contact.html" role="menuitem">Suggest a feature</a>
+          </div>
+        </li>
+
+        <li><a href="../fun.html">Fun Stuff</a></li>
+        <li><a href="../contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile overlay -->
+  <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+    <a href="../index.html">Home</a>
+    <button id="mobile-features-btn">
+      Features <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
+    </button>
+    <div id="mobile-features-sub" class="mobile-sub">
+      <a href="image-converter.html">Image Converter</a>
+      <a href="../contact.html">Suggest a feature</a>
+    </div>
+    <a href="../fun.html">Fun Stuff</a>
+    <a href="../contact.html">Contact Us</a>
+  </div>
+
+  <!-- ==========================================
+       IMAGE CONVERTER
+       ========================================== -->
+  <main>
+    <div class="orb orb-1" style="opacity:0.18;" aria-hidden="true"></div>
+    <div class="orb orb-2" style="opacity:0.14;" aria-hidden="true"></div>
+    <div class="orb orb-3" style="opacity:0.10;" aria-hidden="true"></div>
+
+    <section class="page-section converter-section" aria-labelledby="converter-heading">
+      <div class="section-inner">
+
+        <h1 class="section-title" id="converter-heading">Image Converter</h1>
+        <p class="section-subtitle">
+          Convert, resize, and compress images entirely in your browser —
+          nothing is ever uploaded to a server.
+        </p>
+
+        <div class="converter-wrap">
+
+          <!-- Drop zone -->
+          <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Upload image">
+            <input type="file" id="file-input" accept="image/*" aria-label="Choose image file" />
+            <span class="drop-icon" aria-hidden="true">&#128444;&#65039;</span>
+            <p class="drop-label">Drop an image here or click to browse</p>
+            <p class="drop-hint">PNG, JPEG, WebP, GIF, BMP &nbsp;&middot;&nbsp; Max 50 MB</p>
+          </div>
+
+          <!-- Error banner -->
+          <div class="error-banner" id="error-banner" role="alert"></div>
+
+          <!-- Controls (hidden until image loaded) -->
+          <div id="converter-body" style="display:none;">
+
+            <!-- Previews -->
+            <div class="preview-grid">
+              <div class="preview-box">
+                <p class="preview-label">Original</p>
+                <img id="preview-original" src="" alt="Original preview" />
+                <p class="preview-info" id="info-original">—</p>
+              </div>
+              <div class="preview-box">
+                <p class="preview-label">Output</p>
+                <img id="preview-output" src="" alt="Output preview" />
+                <p class="preview-info" id="info-output">—</p>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-panel">
+
+              <!-- Format -->
+              <div class="control-row">
+                <span class="control-label">Format</span>
+                <div class="format-pills" role="group" aria-label="Output format">
+                  <button class="format-pill active" data-fmt="image/jpeg">JPEG</button>
+                  <button class="format-pill" data-fmt="image/png">PNG</button>
+                  <button class="format-pill" data-fmt="image/webp">WebP</button>
+                </div>
+              </div>
+
+              <!-- Quality -->
+              <div class="control-row" id="quality-row">
+                <span class="control-label">Quality</span>
+                <div class="quality-wrap">
+                  <input type="range" id="quality-slider" min="1" max="100" value="82"
+                    aria-label="Output quality" style="--pct:82%" />
+                  <span class="quality-value" id="quality-val">82%</span>
+                </div>
+              </div>
+
+              <!-- Resize -->
+              <div class="control-row">
+                <span class="control-label">Resize</span>
+                <div class="resize-inputs">
+                  <input type="number" id="resize-w" placeholder="Width" min="1" max="16000" aria-label="Width in pixels" />
+                  <span class="resize-sep">×</span>
+                  <input type="number" id="resize-h" placeholder="Height" min="1" max="16000" aria-label="Height in pixels" />
+                  <span class="resize-sep">px</span>
+                  <button class="lock-btn locked" id="aspect-lock" aria-pressed="true" title="Lock aspect ratio">
+                    &#128274; Aspect ratio
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="convert-actions">
+              <button class="btn-primary" id="convert-btn">Convert &amp; Preview</button>
+              <button class="btn-secondary" id="download-btn" style="display:none;">
+                &#8595; Download
+              </button>
+              <button class="btn-secondary" id="reset-btn">&#8635; New Image</button>
+            </div>
+
+          </div><!-- /converter-body -->
+        </div><!-- /converter-wrap -->
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      &copy; <span id="year"></span> Don Leo &mdash;
+      <a href="https://github.com/Mr-Don-Leo" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* ── Helpers ── */
+    const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function extForMime(mime) {
+      return { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[mime] || 'jpg';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-banner');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    function clearError() {
+      document.getElementById('error-banner').classList.remove('show');
+    }
+
+    /* ── State ── */
+    let originalFile = null;
+    let originalImg  = null;   // HTMLImageElement
+    let outputDataURL = null;
+    let aspectRatio  = null;
+    let aspectLocked = true;
+
+    /* ── DOM refs ── */
+    const dropZone      = document.getElementById('drop-zone');
+    const fileInput     = document.getElementById('file-input');
+    const converterBody = document.getElementById('converter-body');
+    const previewOrig   = document.getElementById('preview-original');
+    const previewOut    = document.getElementById('preview-output');
+    const infoOrig      = document.getElementById('info-original');
+    const infoOut       = document.getElementById('info-output');
+    const qualitySlider = document.getElementById('quality-slider');
+    const qualityVal    = document.getElementById('quality-val');
+    const qualityRow    = document.getElementById('quality-row');
+    const resizeW       = document.getElementById('resize-w');
+    const resizeH       = document.getElementById('resize-h');
+    const aspectLockBtn = document.getElementById('aspect-lock');
+    const convertBtn    = document.getElementById('convert-btn');
+    const downloadBtn   = document.getElementById('download-btn');
+    const resetBtn      = document.getElementById('reset-btn');
+    let   activeMime    = 'image/jpeg';
+
+    /* ── Drop zone drag events ── */
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) loadFile(file);
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) loadFile(fileInput.files[0]);
+    });
+
+    /* ── Load file ── */
+    function loadFile(file) {
+      clearError();
+
+      if (!file.type.startsWith('image/')) {
+        showError('Please upload a valid image file (PNG, JPEG, WebP, GIF, BMP).');
+        return;
+      }
+      if (file.size > MAX_BYTES) {
+        showError(`File is too large (${formatBytes(file.size)}). Maximum allowed size is 50 MB.`);
+        return;
+      }
+
+      originalFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const src = e.target.result;
+        const img = new Image();
+        img.onload = () => {
+          originalImg = img;
+          aspectRatio = img.naturalWidth / img.naturalHeight;
+
+          // Show original preview
+          previewOrig.src = src;
+          infoOrig.innerHTML = `<strong>${img.naturalWidth} × ${img.naturalHeight}px</strong> &nbsp; ${formatBytes(file.size)}`;
+
+          // Pre-fill resize fields with original dimensions
+          resizeW.value = img.naturalWidth;
+          resizeH.value = img.naturalHeight;
+
+          // Reset output preview
+          previewOut.src = '';
+          infoOut.textContent = '—';
+          outputDataURL = null;
+          downloadBtn.style.display = 'none';
+
+          // Show UI
+          converterBody.style.display = 'block';
+          dropZone.style.display = 'none';
+        };
+        img.src = src;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* ── Format pills ── */
+    document.querySelectorAll('.format-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.format-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeMime = btn.dataset.fmt;
+        // PNG is lossless — hide quality slider
+        qualityRow.style.display = activeMime === 'image/png' ? 'none' : '';
+        // Clear output so stale preview isn't shown
+        previewOut.src = '';
+        infoOut.textContent = '—';
+        outputDataURL = null;
+        downloadBtn.style.display = 'none';
+      });
+    });
+
+    /* ── Quality slider ── */
+    qualitySlider.addEventListener('input', () => {
+      const v = qualitySlider.value;
+      qualityVal.textContent = v + '%';
+      qualitySlider.style.setProperty('--pct', v + '%');
+    });
+
+    /* ── Aspect ratio lock ── */
+    aspectLockBtn.addEventListener('click', () => {
+      aspectLocked = !aspectLocked;
+      aspectLockBtn.classList.toggle('locked', aspectLocked);
+      aspectLockBtn.setAttribute('aria-pressed', aspectLocked);
+      aspectLockBtn.innerHTML = aspectLocked ? '&#128274; Aspect ratio' : '&#128275; Aspect ratio';
+    });
+
+    resizeW.addEventListener('input', () => {
+      if (aspectLocked && aspectRatio) {
+        const w = parseInt(resizeW.value);
+        if (!isNaN(w) && w > 0) resizeH.value = Math.round(w / aspectRatio);
+      }
+    });
+    resizeH.addEventListener('input', () => {
+      if (aspectLocked && aspectRatio) {
+        const h = parseInt(resizeH.value);
+        if (!isNaN(h) && h > 0) resizeW.value = Math.round(h * aspectRatio);
+      }
+    });
+
+    /* ── Convert ── */
+    convertBtn.addEventListener('click', () => {
+      if (!originalImg) return;
+      clearError();
+
+      const targetW = parseInt(resizeW.value) || originalImg.naturalWidth;
+      const targetH = parseInt(resizeH.value) || originalImg.naturalHeight;
+
+      if (targetW < 1 || targetH < 1 || targetW > 16000 || targetH > 16000) {
+        showError('Dimensions must be between 1 and 16 000 px.');
+        return;
+      }
+
+      const quality = parseInt(qualitySlider.value) / 100;
+
+      // Draw on canvas
+      const canvas = document.createElement('canvas');
+      canvas.width  = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+
+      // Fill white background for JPEG (transparent → black without this)
+      if (activeMime === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, targetW, targetH);
+      }
+
+      ctx.drawImage(originalImg, 0, 0, targetW, targetH);
+
+      try {
+        outputDataURL = activeMime === 'image/png'
+          ? canvas.toDataURL('image/png')
+          : canvas.toDataURL(activeMime, quality);
+      } catch (err) {
+        showError('Conversion failed. The image may be too large for your browser to process.');
+        return;
+      }
+
+      // Estimate output size from base64 string
+      const base64Len  = outputDataURL.split(',')[1].length;
+      const outputBytes = Math.round((base64Len * 3) / 4);
+      const origBytes   = originalFile.size;
+      const delta       = outputBytes - origBytes;
+      const pct         = Math.abs(Math.round((delta / origBytes) * 100));
+      const deltaTag    = delta <= 0
+        ? `<span class="size-delta smaller">&#9660; ${pct}% smaller</span>`
+        : `<span class="size-delta larger">&#9650; ${pct}% larger</span>`;
+
+      // Update output preview
+      previewOut.src = outputDataURL;
+      infoOut.innerHTML = `<strong>${targetW} × ${targetH}px</strong> &nbsp; ${formatBytes(outputBytes)} ${deltaTag}`;
+
+      downloadBtn.style.display = '';
+    });
+
+    /* ── Download ── */
+    downloadBtn.addEventListener('click', () => {
+      if (!outputDataURL) return;
+      const base  = (originalFile.name || 'image').replace(/\.[^.]+$/, '');
+      const ext   = extForMime(activeMime);
+      const link  = document.createElement('a');
+      link.href   = outputDataURL;
+      link.download = `${base}-converted.${ext}`;
+      link.click();
+    });
+
+    /* ── Reset ── */
+    resetBtn.addEventListener('click', () => {
+      originalFile  = null;
+      originalImg   = null;
+      outputDataURL = null;
+      aspectRatio   = null;
+      fileInput.value = '';
+      previewOrig.src = '';
+      previewOut.src  = '';
+      infoOrig.textContent = '—';
+      infoOut.textContent  = '—';
+      resizeW.value = '';
+      resizeH.value = '';
+      qualitySlider.value = 82;
+      qualityVal.textContent = '82%';
+      qualitySlider.style.setProperty('--pct', '82%');
+      downloadBtn.style.display = 'none';
+      converterBody.style.display = 'none';
+      dropZone.style.display = '';
+      clearError();
+      // Reset format pills
+      document.querySelectorAll('.format-pill').forEach((b, i) => b.classList.toggle('active', i === 0));
+      activeMime = 'image/jpeg';
+      qualityRow.style.display = '';
+    });
+  </script>
+</body>
+</html>

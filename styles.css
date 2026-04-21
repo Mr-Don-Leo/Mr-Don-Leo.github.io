@@ -76,8 +76,10 @@ header.scrolled {
 
 .nav-logo-img {
   height: 40px;
-  width: auto;
+  width: 40px;
   display: block;
+  object-fit: cover;
+  border-radius: 50%;
   filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
   transition: filter 0.25s ease, transform 0.25s ease;
 }
