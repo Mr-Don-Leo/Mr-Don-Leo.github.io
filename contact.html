@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact Don Leo — drop me a message." />
+  <title>Contact — Don Leo</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dp-black':  '#0a0a0a',
+            'dp-navy':   '#0f0e32',
+            'dp-purple': '#342048',
+            'dp-blue':   '#2c2a7b',
+            'accent':    '#a855f7',
+            'accent-2':  '#c026d3',
+            'neon':      '#d946ef',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ==========================================
+       HEADER / NAV (same across all pages)
+       ========================================== -->
+  <header id="site-header">
+    <a href="index.html" class="nav-logo">Don Leo</a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+
+        <li class="dropdown">
+          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            Features <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <span class="disabled-item">Nothing here yet…</span>
+            <hr />
+            <a href="contact.html" role="menuitem">Suggest a feature</a>
+          </div>
+        </li>
+
+        <li><a href="fun.html">Fun Stuff</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile overlay -->
+  <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+    <a href="index.html">Home</a>
+    <button id="mobile-features-btn">
+      Features <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
+    </button>
+    <div id="mobile-features-sub" class="mobile-sub">
+      <a href="contact.html">Suggest a feature</a>
+    </div>
+    <a href="fun.html">Fun Stuff</a>
+    <a href="contact.html">Contact Us</a>
+  </div>
+
+  <!-- ==========================================
+       CONTACT PAGE CONTENT
+       ========================================== -->
+  <main>
+    <!-- Background orbs -->
+    <div class="orb orb-1" style="opacity:0.18;" aria-hidden="true"></div>
+    <div class="orb orb-2" style="opacity:0.15;" aria-hidden="true"></div>
+
+    <section class="page-section" aria-labelledby="contact-heading">
+      <div class="section-inner">
+
+        <!-- Contact card -->
+        <div class="glass-card contact-card">
+          <h1 class="section-title" id="contact-heading">Say Hello</h1>
+          <p class="section-subtitle">
+            Got a question, idea, or just want to chat?
+            Fill out the form and your email client will open ready to send.
+          </p>
+
+          <!-- Contact form -->
+          <form id="contact-form" novalidate>
+            <div class="form-group">
+              <label for="name">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Jane Smith"
+                required
+                autocomplete="name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Your Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="jane@example.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="What's on your mind?"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Write your message here…"
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary form-submit">
+              Send Message &#8594;
+            </button>
+          </form>
+
+          <!-- Success state (shown after submit) -->
+          <div id="form-success" class="form-success">
+            <div class="success-icon">&#10003;</div>
+            <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:0.6rem;">
+              Your email client should be open!
+            </h2>
+            <p>
+              If it didn't open automatically, email me directly at<br />
+              <a href="mailto:maksimababayan@gmail.com" style="color:var(--accent);">
+                maksimababayan@gmail.com
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <!-- Direct email fallback -->
+        <p style="text-align:center;margin-top:1.5rem;color:rgba(196,181,253,0.55);font-size:0.85rem;">
+          Or reach me directly at
+          <a href="mailto:maksimababayan@gmail.com" style="color:var(--accent);text-decoration:none;">
+            maksimababayan@gmail.com
+          </a>
+        </p>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      &copy; <span id="year"></span> Don Leo &mdash;
+      <a href="https://github.com/Mr-Don-Leo" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

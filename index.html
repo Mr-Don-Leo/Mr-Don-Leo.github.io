@@ -1,23 +1,149 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mr-Don-Leo</title>
-    <!-- GitHub Pages SPA redirect handler -->
-    <script>
-      (function() {
-        var redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
-        if (redirect && redirect !== location.href) {
-          history.replaceState(null, null, redirect);
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Don Leo — Developer &amp; Creator. Personal website." />
+  <title>Don Leo</title>
+
+  <!-- Tailwind CSS via Play CDN (no build step required) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dp-black':   '#0a0a0a',
+            'dp-navy':    '#0f0e32',
+            'dp-purple':  '#342048',
+            'dp-blue':    '#2c2a7b',
+            'accent':     '#a855f7',
+            'accent-2':   '#c026d3',
+            'neon':       '#d946ef',
+          }
         }
-      })();
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ==========================================
+       HEADER / NAV
+       ========================================== -->
+  <header id="site-header">
+    <!-- Logo -->
+    <a href="index.html" class="nav-logo">Don Leo</a>
+
+    <!-- Desktop nav links -->
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <!-- Home -->
+        <li>
+          <a href="index.html">Home</a>
+        </li>
+
+        <!-- Features dropdown -->
+        <li class="dropdown">
+          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            Features <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <!-- Add feature links here as you build them, e.g.:
+            <a href="features/my-tool.html" role="menuitem">My Tool</a>
+            -->
+            <span class="disabled-item">Nothing here yet…</span>
+            <hr />
+            <a href="contact.html" role="menuitem">Suggest a feature</a>
+          </div>
+        </li>
+
+        <!-- Fun Stuff -->
+        <li>
+          <a href="fun.html">Fun Stuff</a>
+        </li>
+
+        <!-- Contact -->
+        <li>
+          <a href="contact.html">Contact Us</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Mobile hamburger button -->
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- ==========================================
+       MOBILE OVERLAY MENU
+       ========================================== -->
+  <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+    <a href="index.html">Home</a>
+
+    <!-- Features accordion -->
+    <button id="mobile-features-btn">
+      Features <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
+    </button>
+    <div id="mobile-features-sub" class="mobile-sub">
+      <!-- Populate as you add features -->
+      <a href="contact.html">Suggest a feature</a>
+    </div>
+
+    <a href="fun.html">Fun Stuff</a>
+    <a href="contact.html">Contact Us</a>
+  </div>
+
+  <!-- ==========================================
+       HERO SECTION
+       ========================================== -->
+  <main>
+    <section class="hero" aria-label="Hero">
+      <!-- Ambient glow orbs (purely decorative) -->
+      <div class="orb orb-1" aria-hidden="true"></div>
+      <div class="orb orb-2" aria-hidden="true"></div>
+      <div class="orb orb-3" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <p class="hero-badge">&#10022; Welcome to my corner of the internet</p>
+
+        <h1 class="hero-title">
+          Hi, I'm<br />
+          <span class="gradient-text">Don Leo</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Developer &amp; creator building things I find interesting —
+          features, experiments, and a little fun stuff along the way.
+        </p>
+
+        <div class="btn-group">
+          <a href="contact.html" class="btn-primary">Get in Touch</a>
+          <a href="fun.html" class="btn-secondary">Explore Fun Stuff</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer>
+    <p>
+      &copy; <span id="year"></span> Don Leo &mdash;
+      <a href="https://github.com/Mr-Don-Leo" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
 </html>
