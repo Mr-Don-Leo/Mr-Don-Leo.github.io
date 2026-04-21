@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,13 +14,13 @@
       theme: {
         extend: {
           colors: {
-            'dp-black':  '#0a0a0a',
-            'dp-navy':   '#0f0e32',
+            'dp-black': '#0a0a0a',
+            'dp-navy': '#0f0e32',
             'dp-purple': '#342048',
-            'dp-blue':   '#2c2a7b',
-            'accent':    '#a855f7',
-            'accent-2':  '#c026d3',
-            'neon':      '#d946ef',
+            'dp-blue': '#2c2a7b',
+            'accent': '#a855f7',
+            'accent-2': '#c026d3',
+            'neon': '#d946ef',
           }
         }
       }
@@ -39,11 +40,13 @@
       background: rgba(168, 85, 247, 0.04);
       position: relative;
     }
+
     .drop-zone:hover,
     .drop-zone.drag-over {
       border-color: rgba(168, 85, 247, 0.75);
       background: rgba(168, 85, 247, 0.09);
     }
+
     .drop-zone input[type="file"] {
       position: absolute;
       inset: 0;
@@ -52,17 +55,20 @@
       width: 100%;
       height: 100%;
     }
+
     .drop-icon {
       font-size: 3rem;
       margin-bottom: 0.75rem;
       display: block;
     }
+
     .drop-label {
       font-size: 1rem;
       font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 0.3rem;
     }
+
     .drop-hint {
       font-size: 0.8rem;
       color: rgba(196, 181, 253, 0.5);
@@ -82,16 +88,21 @@
       gap: 1.25rem;
       margin-top: 1.5rem;
     }
+
     @media (max-width: 600px) {
-      .preview-grid { grid-template-columns: 1fr; }
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
     .preview-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 1rem;
       padding: 1rem;
       text-align: center;
     }
+
     .preview-box img {
       max-width: 100%;
       max-height: 260px;
@@ -100,28 +111,34 @@
       display: block;
       margin: 0 auto 0.75rem;
     }
+
     .preview-label {
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: rgba(196,181,253,0.5);
+      color: rgba(196, 181, 253, 0.5);
       margin-bottom: 0.35rem;
     }
+
     .preview-info {
       font-size: 0.82rem;
       color: var(--text-secondary);
     }
-    .preview-info strong { color: var(--accent); }
+
+    .preview-info strong {
+      color: var(--accent);
+    }
 
     /* ── Controls panel ── */
     .controls-panel {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 1.25rem;
       padding: 1.75rem;
       margin-top: 1.5rem;
     }
+
     .control-row {
       display: flex;
       align-items: center;
@@ -129,13 +146,17 @@
       flex-wrap: wrap;
       margin-bottom: 1.25rem;
     }
-    .control-row:last-child { margin-bottom: 0; }
+
+    .control-row:last-child {
+      margin-bottom: 0;
+    }
+
     .control-label {
       font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: rgba(196,181,253,0.55);
+      color: rgba(196, 181, 253, 0.55);
       min-width: 80px;
     }
 
@@ -145,10 +166,11 @@
       gap: 0.5rem;
       flex-wrap: wrap;
     }
+
     .format-pill {
       padding: 0.4rem 1rem;
       border-radius: 9999px;
-      border: 1px solid rgba(168,85,247,0.3);
+      border: 1px solid rgba(168, 85, 247, 0.3);
       background: transparent;
       color: var(--text-secondary);
       font-size: 0.85rem;
@@ -156,15 +178,17 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
+
     .format-pill:hover {
-      border-color: rgba(168,85,247,0.6);
+      border-color: rgba(168, 85, 247, 0.6);
       color: var(--text-primary);
     }
+
     .format-pill.active {
-      background: rgba(168,85,247,0.28);
-      border-color: rgba(168,85,247,0.7);
+      background: rgba(168, 85, 247, 0.28);
+      border-color: rgba(168, 85, 247, 0.7);
       color: var(--text-primary);
-      box-shadow: 0 0 12px rgba(168,85,247,0.25);
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
     }
 
     /* Quality slider */
@@ -175,27 +199,33 @@
       flex: 1;
       min-width: 180px;
     }
+
     input[type="range"] {
       flex: 1;
       -webkit-appearance: none;
       appearance: none;
       height: 4px;
       border-radius: 9999px;
-      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 82%), rgba(168,85,247,0.2) var(--pct, 82%));
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct, 82%), rgba(168, 85, 247, 0.2) var(--pct, 82%));
       outline: none;
       cursor: pointer;
     }
+
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 16px;
       height: 16px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 8px rgba(168,85,247,0.6);
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
       cursor: pointer;
       transition: transform 0.15s ease;
     }
-    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
     .quality-value {
       font-size: 0.9rem;
       font-weight: 700;
@@ -211,11 +241,12 @@
       gap: 0.6rem;
       flex-wrap: wrap;
     }
+
     .resize-inputs input[type="number"] {
       width: 90px;
       padding: 0.45rem 0.75rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(168,85,247,0.22);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(168, 85, 247, 0.22);
       border-radius: 0.6rem;
       color: var(--text-primary);
       font-size: 0.9rem;
@@ -223,30 +254,37 @@
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
     .resize-inputs input[type="number"]:focus {
-      border-color: rgba(168,85,247,0.6);
-      box-shadow: 0 0 0 3px rgba(168,85,247,0.1);
+      border-color: rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
     }
-    .resize-inputs input[type="number"]::placeholder { color: rgba(196,181,253,0.3); }
+
+    .resize-inputs input[type="number"]::placeholder {
+      color: rgba(196, 181, 253, 0.3);
+    }
+
     .resize-sep {
-      color: rgba(196,181,253,0.4);
+      color: rgba(196, 181, 253, 0.4);
       font-size: 0.85rem;
     }
+
     .lock-btn {
       padding: 0.4rem 0.65rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(168,85,247,0.22);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(168, 85, 247, 0.22);
       border-radius: 0.6rem;
-      color: rgba(196,181,253,0.55);
+      color: rgba(196, 181, 253, 0.55);
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
     }
+
     .lock-btn.locked {
-      border-color: rgba(168,85,247,0.55);
+      border-color: rgba(168, 85, 247, 0.55);
       color: var(--accent);
-      background: rgba(168,85,247,0.1);
+      background: rgba(168, 85, 247, 0.1);
     }
 
     /* Convert button area */
@@ -266,10 +304,12 @@
       border-radius: 9999px;
       margin-left: 0.4rem;
     }
+
     .size-delta.smaller {
       background: rgba(34, 197, 94, 0.15);
       color: #86efac;
     }
+
     .size-delta.larger {
       background: rgba(239, 68, 68, 0.15);
       color: #fca5a5;
@@ -278,15 +318,18 @@
     /* Error banner */
     .error-banner {
       display: none;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       border-radius: 0.75rem;
       padding: 0.85rem 1.2rem;
       color: #fca5a5;
       font-size: 0.88rem;
       margin-top: 1rem;
     }
-    .error-banner.show { display: block; }
+
+    .error-banner.show {
+      display: block;
+    }
 
     /* Disabled items in dropdown should be removed */
     .disabled-item {
@@ -304,6 +347,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ==========================================
@@ -313,31 +357,27 @@
     <a href="../index.html" class="nav-logo">
       <img src="../Images/logo2.png" alt="Don Leo" class="nav-logo-img" />
     </a>
-
     <nav aria-label="Main navigation">
       <ul class="nav-links">
         <li><a href="../index.html">Home</a></li>
-
         <li class="dropdown">
           <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
             Features <span class="arrow">▾</span>
           </button>
           <div class="dropdown-menu" role="menu">
-            <a href="image-converter.html" role="menuitem" class="active">Image Converter</a>
+            <a href="image-converter.html" role="menuitem">Image Converter</a>
+            <a href="pomodoro.html" role="menuitem">Pomodoro Timer</a>
+            <a href="markdown-editor.html" role="menuitem" class="active">Markdown Editor</a>
             <hr />
             <a href="../contact.html" role="menuitem">Suggest a feature</a>
           </div>
         </li>
-
         <li><a href="../fun.html">Fun Stuff</a></li>
         <li><a href="../contact.html">Contact Us</a></li>
       </ul>
     </nav>
-
     <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </header>
 
@@ -419,8 +459,8 @@
               <div class="control-row" id="quality-row">
                 <span class="control-label">Quality</span>
                 <div class="quality-wrap">
-                  <input type="range" id="quality-slider" min="1" max="100" value="82"
-                    aria-label="Output quality" style="--pct:82%" />
+                  <input type="range" id="quality-slider" min="1" max="100" value="82" aria-label="Output quality"
+                    style="--pct:82%" />
                   <span class="quality-value" id="quality-val">82%</span>
                 </div>
               </div>
@@ -429,9 +469,11 @@
               <div class="control-row">
                 <span class="control-label">Resize</span>
                 <div class="resize-inputs">
-                  <input type="number" id="resize-w" placeholder="Width" min="1" max="16000" aria-label="Width in pixels" />
+                  <input type="number" id="resize-w" placeholder="Width" min="1" max="16000"
+                    aria-label="Width in pixels" />
                   <span class="resize-sep">×</span>
-                  <input type="number" id="resize-h" placeholder="Height" min="1" max="16000" aria-label="Height in pixels" />
+                  <input type="number" id="resize-h" placeholder="Height" min="1" max="16000"
+                    aria-label="Height in pixels" />
                   <span class="resize-sep">px</span>
                   <button class="lock-btn locked" id="aspect-lock" aria-pressed="true" title="Lock aspect ratio">
                     &#128274; Aspect ratio
@@ -492,29 +534,29 @@
 
     /* ── State ── */
     let originalFile = null;
-    let originalImg  = null;   // HTMLImageElement
+    let originalImg = null;   // HTMLImageElement
     let outputDataURL = null;
-    let aspectRatio  = null;
+    let aspectRatio = null;
     let aspectLocked = true;
 
     /* ── DOM refs ── */
-    const dropZone      = document.getElementById('drop-zone');
-    const fileInput     = document.getElementById('file-input');
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
     const converterBody = document.getElementById('converter-body');
-    const previewOrig   = document.getElementById('preview-original');
-    const previewOut    = document.getElementById('preview-output');
-    const infoOrig      = document.getElementById('info-original');
-    const infoOut       = document.getElementById('info-output');
+    const previewOrig = document.getElementById('preview-original');
+    const previewOut = document.getElementById('preview-output');
+    const infoOrig = document.getElementById('info-original');
+    const infoOut = document.getElementById('info-output');
     const qualitySlider = document.getElementById('quality-slider');
-    const qualityVal    = document.getElementById('quality-val');
-    const qualityRow    = document.getElementById('quality-row');
-    const resizeW       = document.getElementById('resize-w');
-    const resizeH       = document.getElementById('resize-h');
+    const qualityVal = document.getElementById('quality-val');
+    const qualityRow = document.getElementById('quality-row');
+    const resizeW = document.getElementById('resize-w');
+    const resizeH = document.getElementById('resize-h');
     const aspectLockBtn = document.getElementById('aspect-lock');
-    const convertBtn    = document.getElementById('convert-btn');
-    const downloadBtn   = document.getElementById('download-btn');
-    const resetBtn      = document.getElementById('reset-btn');
-    let   activeMime    = 'image/jpeg';
+    const convertBtn = document.getElementById('convert-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    let activeMime = 'image/jpeg';
 
     /* ── Drop zone drag events ── */
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
@@ -636,7 +678,7 @@
 
       // Draw on canvas
       const canvas = document.createElement('canvas');
-      canvas.width  = targetW;
+      canvas.width = targetW;
       canvas.height = targetH;
       const ctx = canvas.getContext('2d');
 
@@ -658,12 +700,12 @@
       }
 
       // Estimate output size from base64 string
-      const base64Len  = outputDataURL.split(',')[1].length;
+      const base64Len = outputDataURL.split(',')[1].length;
       const outputBytes = Math.round((base64Len * 3) / 4);
-      const origBytes   = originalFile.size;
-      const delta       = outputBytes - origBytes;
-      const pct         = Math.abs(Math.round((delta / origBytes) * 100));
-      const deltaTag    = delta <= 0
+      const origBytes = originalFile.size;
+      const delta = outputBytes - origBytes;
+      const pct = Math.abs(Math.round((delta / origBytes) * 100));
+      const deltaTag = delta <= 0
         ? `<span class="size-delta smaller">&#9660; ${pct}% smaller</span>`
         : `<span class="size-delta larger">&#9650; ${pct}% larger</span>`;
 
@@ -677,25 +719,25 @@
     /* ── Download ── */
     downloadBtn.addEventListener('click', () => {
       if (!outputDataURL) return;
-      const base  = (originalFile.name || 'image').replace(/\.[^.]+$/, '');
-      const ext   = extForMime(activeMime);
-      const link  = document.createElement('a');
-      link.href   = outputDataURL;
+      const base = (originalFile.name || 'image').replace(/\.[^.]+$/, '');
+      const ext = extForMime(activeMime);
+      const link = document.createElement('a');
+      link.href = outputDataURL;
       link.download = `${base}-converted.${ext}`;
       link.click();
     });
 
     /* ── Reset ── */
     resetBtn.addEventListener('click', () => {
-      originalFile  = null;
-      originalImg   = null;
+      originalFile = null;
+      originalImg = null;
       outputDataURL = null;
-      aspectRatio   = null;
+      aspectRatio = null;
       fileInput.value = '';
       previewOrig.src = '';
-      previewOut.src  = '';
+      previewOut.src = '';
       infoOrig.textContent = '—';
-      infoOut.textContent  = '—';
+      infoOut.textContent = '—';
       resizeW.value = '';
       resizeH.value = '';
       qualitySlider.value = 82;
@@ -712,4 +754,5 @@
     });
   </script>
 </body>
+
 </html>

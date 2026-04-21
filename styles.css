@@ -165,7 +165,7 @@ header.scrolled .nav-links > li > button:hover {
 /* Dropdown panel */
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.6rem);
+  top: 100%;
   right: 0;
   min-width: 190px;
   background: rgba(12, 10, 40, 0.88);
@@ -173,7 +173,10 @@ header.scrolled .nav-links > li > button:hover {
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(168, 85, 247, 0.22);
   border-radius: 1rem;
+  /* padding-top creates the visual gap without breaking the hover hitbox */
   padding: 0.5rem;
+  padding-top: calc(0.6rem + 0.5rem);
+  margin-top: 0;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
