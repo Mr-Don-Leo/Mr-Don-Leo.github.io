@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Minesweeper — Fun Stuff — Don Leo" />
+  <title>Minesweeper — Don Leo</title>
+  <link rel="icon" type="image/png" href="../Images/logo2.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dp-black':  '#0a0a0a',
+            'dp-navy':   '#0f0e32',
+            'dp-purple': '#342048',
+            'dp-blue':   '#2c2a7b',
+            'accent':    '#a855f7',
+            'accent-2':  '#c026d3',
+            'neon':      '#d946ef',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    /* ── SCREEN TOGGLE ─────────────────────────── */
+    .ms-screen                  { display: none; }
+    #ms-diff-screen.active      { display: flex; }
+    #ms-game-screen.active      { display: flex; }
+
+    /* ── DIFFICULTY SCREEN ─────────────────────── */
+    #ms-diff-screen { justify-content: center; align-items: center; }
+
+    .ms-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 0.65rem;
+    }
+    .ms-bomb-icon { font-size: 2.8rem; }
+    .ms-title {
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #4ade80, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+
+    .ms-tagline { color: rgba(255,255,255,0.5); font-size:0.95rem; margin-bottom: 0.5rem; text-align:center; }
+    .ms-howto-link {
+      background:none; border:none; color:var(--accent);
+      font-size:0.82rem; cursor:pointer; text-decoration:underline;
+      text-underline-offset:3px; margin-bottom:2rem; padding:0; display:inline-block;
+    }
+    .ms-howto-link:hover { opacity:0.75; }
+
+    /* Difficulty cards — 5 in a grid */
+    .ms-diff-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+      width: 100%;
+      max-width: 560px;
+    }
+    @media (max-width: 500px) {
+      .ms-diff-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .ms-diff-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 1.2rem 0.75rem 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      text-align: center; color: white;
+      position: relative; overflow: hidden;
+    }
+    .ms-diff-card::before {
+      content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.2s;
+      background: radial-gradient(circle at 50% 0%, var(--dc), transparent 70%);
+    }
+    .ms-diff-card:hover::before { opacity:0.15; }
+    .ms-diff-card:hover { border-color:var(--dc); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.3); }
+    .ms-diff-card[data-diff="baby"]         { --dc: #a3e635; }
+    .ms-diff-card[data-diff="beginner"]     { --dc: #4ade80; }
+    .ms-diff-card[data-diff="intermediate"] { --dc: #f59e0b; }
+    .ms-diff-card[data-diff="advanced"]     { --dc: #f97316; }
+    .ms-diff-card[data-diff="expert"]       { --dc: #ef4444; }
+
+    .ms-dc-emoji { font-size:1.7rem; margin-bottom:0.35rem; display:block; }
+    .ms-dc-name  { font-size:0.92rem; font-weight:800; margin-bottom:0.25rem; }
+    .ms-dc-info  { font-size:0.68rem; color:rgba(255,255,255,0.42); margin-bottom:0.4rem; line-height:1.4; }
+    .ms-dc-stat  { font-size:0.65rem; color:rgba(255,255,255,0.25); min-height:1em; }
+
+    /* ── GAME SCREEN ───────────────────────────── */
+    #ms-game-screen {
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 70px;
+      padding-bottom: 2rem;
+    }
+
+    /* Top bar */
+    .ms-topbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      width: 100%; max-width: 640px;
+      padding: 0.75rem 1rem 0.5rem; gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .ms-back-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px; color:rgba(255,255,255,0.6);
+      padding:0.4rem 0.8rem; font-size:0.8rem;
+      cursor:pointer; transition:all 0.18s; flex-shrink:0;
+    }
+    .ms-back-btn:hover { background:rgba(255,255,255,0.12); color:white; }
+
+    .ms-status-bar {
+      display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .ms-stat-pill {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding:0.3rem 0.85rem;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .ms-stat-pill.mines  { color: #f87171; }
+    .ms-stat-pill.timer  { color: #c4b5fd; }
+
+    .ms-diff-label {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: #86efac; border-radius:20px;
+      padding:0.3rem 0.85rem; font-size:0.76rem; font-weight:600;
+    }
+
+    /* Smiley/restart button */
+    .ms-restart-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%; width:42px; height:42px;
+      font-size:1.3rem; cursor:pointer; transition:all 0.18s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .ms-restart-btn:hover { background:rgba(255,255,255,0.18); transform:scale(1.1); }
+
+    /* ── GRID WRAPPER ─────────────────────────── */
+    .ms-grid-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
+      padding: 0.5rem 1rem 0.5rem;
+      position: relative;
+    }
+    .ms-grid {
+      display: grid;
+      gap: 2px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* ── CELLS ──────────────────────────────────── */
+    .ms-cell {
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.08);
+      transition: background 0.12s;
+      touch-action: none;
+    }
+    .ms-cell:hover:not(.revealed):not(.flagged) {
+      background: rgba(255,255,255,0.16);
+    }
+    .ms-cell.revealed {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.04);
+      cursor: default;
+    }
+    .ms-cell.flagged {
+      background: rgba(239,68,68,0.12);
+      border-color: rgba(239,68,68,0.25);
+    }
+    .ms-cell.mine-hit {
+      background: rgba(239,68,68,0.55);
+      border-color: #ef4444;
+    }
+    .ms-cell.mine-shown {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    /* Number colours */
+    .n1 { color: #60a5fa; }
+    .n2 { color: #4ade80; }
+    .n3 { color: #f87171; }
+    .n4 { color: #818cf8; }
+    .n5 { color: #fb923c; }
+    .n6 { color: #22d3ee; }
+    .n7 { color: #e879f9; }
+    .n8 { color: #94a3b8; }
+
+    /* ── OVERLAY (win/lose) ─────────────────────── */
+    .ms-overlay {
+      position: fixed; inset:0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+      display:flex; align-items:center; justify-content:center;
+      z-index:2000; padding:1rem;
+    }
+    .ms-overlay.hidden { display:none; }
+    .ms-result-box {
+      background: linear-gradient(155deg,#100d2e,#1b1540);
+      border:1px solid rgba(168,85,247,0.28);
+      border-radius:20px; padding:2rem; max-width:400px; width:100%;
+      text-align:center;
+      animation: ms-pop 0.26s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes ms-pop { from { opacity:0; transform:scale(0.88) translateY(14px); } to { opacity:1; transform:none; } }
+
+    .ms-result-icon  { font-size:3rem; margin-bottom:0.6rem; }
+    .ms-result-title { font-size:1.5rem; font-weight:800; margin-bottom:0.35rem; }
+    .ms-result-sub   { font-size:0.9rem; color:rgba(255,255,255,0.5); margin-bottom:1.5rem; }
+    .ms-result-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:1.5rem; }
+    .ms-rstat { text-align:center; }
+    .ms-rstat-num { font-size:1.4rem; font-weight:800; color:#4ade80; }
+    .ms-rstat-lbl { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.05em; color:rgba(255,255,255,0.38); }
+    .ms-result-btns { display:flex; gap:0.7rem; justify-content:center; flex-wrap:wrap; }
+
+    /* ── HOW TO PLAY ────────────────────────────── */
+    .ms-howto-box {
+      background: linear-gradient(155deg,#100d2e,#1b1540);
+      border:1px solid rgba(168,85,247,0.28);
+      border-radius:20px; padding:2rem; max-width:420px; width:100%;
+      max-height:88vh; overflow-y:auto;
+      animation: ms-pop 0.26s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .ms-howto-title { font-size:1.25rem; font-weight:800; margin-bottom:1rem; text-align:center; }
+    .ms-howto-rule  { font-size:0.83rem; color:rgba(255,255,255,0.65); margin-bottom:0.65rem; line-height:1.6; }
+    .ms-howto-rule strong { color:white; }
+    .ms-howto-hr { border:none; border-top:1px solid rgba(255,255,255,0.08); margin:1rem 0; }
+
+    /* ── TOAST ──────────────────────────────────── */
+    #ms-toast-container {
+      position:fixed; top:72px; left:50%;
+      transform:translateX(-50%); z-index:3000;
+      display:flex; flex-direction:column;
+      align-items:center; gap:0.45rem; pointer-events:none;
+    }
+    .ms-toast {
+      background:rgba(255,255,255,0.95); color:#111;
+      padding:0.5rem 1.2rem; border-radius:8px;
+      font-weight:700; font-size:0.87rem; white-space:nowrap;
+      animation: t-in 0.18s ease, t-out 0.3s ease 1.9s forwards;
+    }
+    @keyframes t-in  { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+    @keyframes t-out { from { opacity:1; } to { opacity:0; } }
+
+    /* ── CELL REVEAL ANIMATION ──────────────────── */
+    @keyframes cell-reveal {
+      from { transform: scale(0.6); opacity:0; }
+      to   { transform: scale(1);   opacity:1; }
+    }
+    .ms-cell.reveal-anim { animation: cell-reveal 0.15s ease; }
+
+    /* Loading */
+    .ms-loading {
+      display:flex; flex-direction:column; align-items:center;
+      gap:1rem; padding:3rem 0; color:rgba(255,255,255,0.35); font-size:0.9rem;
+    }
+    .ms-spinner {
+      width:34px; height:34px;
+      border:3px solid rgba(34,197,94,0.2);
+      border-top-color:#4ade80; border-radius:50%;
+      animation:spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       HEADER / NAV
+       ========================================== -->
+  <header id="site-header">
+    <a href="../index.html" class="nav-logo">
+      <img src="../Images/logo2.png" alt="Don Leo" class="nav-logo-img" />
+    </a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li class="dropdown">
+          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            Features <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="../features/image-converter.html" role="menuitem">Image Converter</a>
+            <a href="../features/pomodoro.html" role="menuitem">Pomodoro Timer</a>
+            <a href="../features/markdown-editor.html" role="menuitem">Markdown Editor</a>
+            <hr />
+            <a href="../contact.html" role="menuitem">Suggest a feature</a>
+          </div>
+        </li>
+        <li><a href="../fun.html" class="active">Fun Stuff</a></li>
+        <li><a href="../contact.html">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Mobile overlay -->
+  <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+    <a href="../index.html">Home</a>
+    <button id="mobile-features-btn">
+      Features <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
+    </button>
+    <div id="mobile-features-sub" class="mobile-sub">
+      <a href="../features/image-converter.html">Image Converter</a>
+      <a href="../features/pomodoro.html">Pomodoro Timer</a>
+      <a href="../features/markdown-editor.html">Markdown Editor</a>
+      <a href="../contact.html">Suggest a feature</a>
+    </div>
+    <a href="../fun.html" class="active">Fun Stuff</a>
+    <a href="../contact.html">Contact Us</a>
+  </div>
+
+  <div id="ms-toast-container" aria-live="polite"></div>
+
+  <main>
+
+    <!-- ==========================================
+         SCREEN 1: DIFFICULTY SELECTION
+         ========================================== -->
+    <section id="ms-diff-screen" class="ms-screen active page-section" aria-labelledby="ms-heading">
+      <div class="orb orb-1" style="opacity:0.18;" aria-hidden="true"></div>
+      <div class="orb orb-2" style="opacity:0.14;" aria-hidden="true"></div>
+
+      <div style="position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;text-align:center;">
+        <div class="ms-title-row">
+          <span class="ms-bomb-icon" aria-hidden="true">💣</span>
+          <h1 class="ms-title" id="ms-heading">Minesweeper</h1>
+        </div>
+
+        <p class="ms-tagline">Clear the board. Don't hit a mine. Choose your fate.</p>
+        <button class="ms-howto-link" id="ms-howto-btn">ℹ How to play</button>
+
+        <div class="ms-diff-grid">
+          <button class="ms-diff-card" data-diff="baby">
+            <span class="ms-dc-emoji">🍼</span>
+            <div class="ms-dc-name">Baby</div>
+            <div class="ms-dc-info">8×8 grid<br>10 mines</div>
+            <div class="ms-dc-stat" id="ms-stat-baby"></div>
+          </button>
+          <button class="ms-diff-card" data-diff="beginner">
+            <span class="ms-dc-emoji">😊</span>
+            <div class="ms-dc-name">Beginner</div>
+            <div class="ms-dc-info">9×9 grid<br>10 mines</div>
+            <div class="ms-dc-stat" id="ms-stat-beginner"></div>
+          </button>
+          <button class="ms-diff-card" data-diff="intermediate">
+            <span class="ms-dc-emoji">😐</span>
+            <div class="ms-dc-name">Intermediate</div>
+            <div class="ms-dc-info">16×16 grid<br>40 mines</div>
+            <div class="ms-dc-stat" id="ms-stat-intermediate"></div>
+          </button>
+          <button class="ms-diff-card" data-diff="advanced">
+            <span class="ms-dc-emoji">😰</span>
+            <div class="ms-dc-name">Advanced</div>
+            <div class="ms-dc-info">30×16 grid<br>99 mines</div>
+            <div class="ms-dc-stat" id="ms-stat-advanced"></div>
+          </button>
+          <button class="ms-diff-card" data-diff="expert">
+            <span class="ms-dc-emoji">💀</span>
+            <div class="ms-dc-name">Expert</div>
+            <div class="ms-dc-info">40×20 grid<br>160 mines</div>
+            <div class="ms-dc-stat" id="ms-stat-expert"></div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SCREEN 2: GAME
+         ========================================== -->
+    <section id="ms-game-screen" class="ms-screen" aria-label="Minesweeper game">
+
+      <!-- Top bar -->
+      <div class="ms-topbar">
+        <button class="ms-back-btn" id="ms-back-btn">← Back</button>
+
+        <div class="ms-status-bar">
+          <div class="ms-stat-pill mines">
+            <span>💣</span><span id="mine-count">0</span>
+          </div>
+          <button class="ms-restart-btn" id="ms-restart-btn" title="New game" aria-label="New game">😊</button>
+          <div class="ms-stat-pill timer">
+            <span>⏱</span><span id="timer-val">0:00</span>
+          </div>
+        </div>
+
+        <div class="ms-diff-label" id="ms-diff-label"></div>
+      </div>
+
+      <!-- Grid -->
+      <div class="ms-grid-wrap">
+        <div id="ms-grid" class="ms-grid"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <p>
+      &copy; <span id="year"></span> Don Leo &mdash;
+      <a href="https://github.com/Mr-Don-Leo" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <!-- RESULT OVERLAY -->
+  <div id="ms-result-overlay" class="ms-overlay hidden" role="dialog" aria-modal="true">
+    <div class="ms-result-box">
+      <div class="ms-result-icon"  id="ms-result-icon"></div>
+      <h2 class="ms-result-title" id="ms-result-title"></h2>
+      <p class="ms-result-sub"    id="ms-result-sub"></p>
+      <div class="ms-result-stats">
+        <div class="ms-rstat"><div class="ms-rstat-num" id="msr-played">0</div><div class="ms-rstat-lbl">Played</div></div>
+        <div class="ms-rstat"><div class="ms-rstat-num" id="msr-won">0</div><div class="ms-rstat-lbl">Won</div></div>
+        <div class="ms-rstat"><div class="ms-rstat-num" id="msr-best">--</div><div class="ms-rstat-lbl">Best Time</div></div>
+      </div>
+      <div class="ms-result-btns">
+        <button class="btn-primary"   id="ms-play-again">Play Again</button>
+        <button class="btn-secondary" id="ms-change-diff">Change Difficulty</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY OVERLAY -->
+  <div id="ms-howto-overlay" class="ms-overlay hidden" role="dialog" aria-modal="true">
+    <div class="ms-howto-box">
+      <h2 class="ms-howto-title">How to Play</h2>
+      <p class="ms-howto-rule">
+        The grid hides a set number of <strong>mines</strong>.
+        Your goal is to reveal every safe cell without clicking a mine.
+      </p>
+      <p class="ms-howto-rule">
+        <strong>Left-click</strong> (or tap) to reveal a cell.
+        <strong>Right-click</strong> (or long-press on mobile) to place / remove a 🚩 flag on a suspected mine.
+      </p>
+      <p class="ms-howto-rule">
+        Revealed cells show a number — the count of mines touching that cell.
+        Use these numbers to deduce where the mines are.
+      </p>
+      <p class="ms-howto-rule">
+        <strong>Chord-click:</strong> if a revealed number already has the right number of flags around it,
+        clicking it will auto-reveal all remaining adjacent cells. Useful once you're confident.
+      </p>
+      <p class="ms-howto-rule">
+        <strong>First click is always safe.</strong> Mines are placed after your first move.
+      </p>
+      <hr class="ms-howto-hr" />
+      <p class="ms-howto-rule" style="font-size:0.78rem;">
+        The timer starts on your first click. Best times are saved per difficulty.
+      </p>
+      <button class="btn-primary" id="ms-howto-close" style="margin-top:0.5rem;display:block;margin-inline:auto;">Got it!</button>
+    </div>
+  </div>
+
+  <script src="../script.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* ══════════════════════════════════════════════
+       MINESWEEPER
+       ══════════════════════════════════════════════ */
+
+    const DIFFS = {
+      baby:         { label:'Baby',         rows:8,  cols:8,  mines:10,  emoji:'🍼', cellPx:40 },
+      beginner:     { label:'Beginner',     rows:9,  cols:9,  mines:10,  emoji:'😊', cellPx:38 },
+      intermediate: { label:'Intermediate', rows:16, cols:16, mines:40,  emoji:'😐', cellPx:34 },
+      advanced:     { label:'Advanced',     rows:16, cols:30, mines:99,  emoji:'😰', cellPx:30 },
+      expert:       { label:'Expert',       rows:20, cols:40, mines:160, emoji:'💀', cellPx:26 },
+    };
+
+    const STATS_KEY = 'ms_stats_v1';
+    const NUM_COLORS = ['','n1','n2','n3','n4','n5','n6','n7','n8'];
+
+    /* ── GAME STATE ── */
+    let G = {
+      diff: null, cfg: null,
+      board: [],            /* 2D: { mine, flag, revealed, adj } */
+      state: 'idle',        /* idle | playing | won | lost */
+      minesLeft: 0,
+      timerInterval: null,
+      timerSeconds: 0,
+      firstClick: true,
+    };
+
+    /* ── STATS ── */
+    function loadStats()  { try { return JSON.parse(localStorage.getItem(STATS_KEY)) || {}; } catch { return {}; } }
+    function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+    function getDS(diff) {
+      let s = loadStats();
+      if (!s[diff]) { s[diff] = { played:0, won:0, best:null }; saveStats(s); }
+      return loadStats()[diff];
+    }
+    function recordWin(diff, seconds) {
+      let s = loadStats();
+      if (!s[diff]) s[diff] = { played:0, won:0, best:null };
+      s[diff].played++; s[diff].won++;
+      if (s[diff].best === null || seconds < s[diff].best) s[diff].best = seconds;
+      saveStats(s);
+    }
+    function recordLoss(diff) {
+      let s = loadStats();
+      if (!s[diff]) s[diff] = { played:0, won:0, best:null };
+      s[diff].played++;
+      saveStats(s);
+    }
+
+    /* ── TIMER ── */
+    function startTimer() {
+      G.timerSeconds = 0;
+      updateTimerDisplay();
+      clearInterval(G.timerInterval);
+      G.timerInterval = setInterval(() => { G.timerSeconds++; updateTimerDisplay(); }, 1000);
+    }
+    function stopTimer() { clearInterval(G.timerInterval); G.timerInterval = null; }
+    function updateTimerDisplay() {
+      const m = Math.floor(G.timerSeconds / 60);
+      const s = G.timerSeconds % 60;
+      document.getElementById('timer-val').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    }
+    function fmtTime(s) {
+      if (s === null) return '--';
+      const m = Math.floor(s / 60), sec = s % 60;
+      return `${m}:${sec.toString().padStart(2,'0')}`;
+    }
+
+    /* ── BOARD CREATION ── */
+    function createEmptyBoard(rows, cols) {
+      return Array.from({ length: rows }, () =>
+        Array.from({ length: cols }, () => ({ mine:false, flag:false, revealed:false, adj:0 }))
+      );
+    }
+
+    function placeMines(safeR, safeC) {
+      const { rows, cols, mines } = G.cfg;
+      /* Safe zone: the clicked cell and its 8 neighbours */
+      const safe = new Set();
+      for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+        const r=safeR+dr, c=safeC+dc;
+        if (r>=0&&r<rows&&c>=0&&c<cols) safe.add(`${r},${c}`);
+      }
+      let placed = 0;
+      while (placed < mines) {
+        const r = Math.floor(Math.random() * rows);
+        const c = Math.floor(Math.random() * cols);
+        if (!G.board[r][c].mine && !safe.has(`${r},${c}`)) {
+          G.board[r][c].mine = true; placed++;
+        }
+      }
+      /* Calculate adjacency */
+      for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+        if (G.board[r][c].mine) continue;
+        let count = 0;
+        eachNeighbour(r, c, (nr, nc) => { if (G.board[nr][nc].mine) count++; });
+        G.board[r][c].adj = count;
+      }
+    }
+
+    function eachNeighbour(r, c, fn) {
+      const { rows, cols } = G.cfg;
+      for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+        if (dr===0&&dc===0) continue;
+        const nr=r+dr, nc=c+dc;
+        if (nr>=0&&nr<rows&&nc>=0&&nc<cols) fn(nr, nc);
+      }
+    }
+
+    /* ── BUILD GRID DOM ── */
+    function buildGrid() {
+      const { rows, cols, cellPx } = G.cfg;
+      const grid = document.getElementById('ms-grid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${cols}, ${cellPx}px)`;
+      grid.style.gridTemplateRows    = `repeat(${rows}, ${cellPx}px)`;
+
+      for (let r=0; r<rows; r++) {
+        for (let c=0; c<cols; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'ms-cell';
+          cell.style.width  = cellPx + 'px';
+          cell.style.height = cellPx + 'px';
+          cell.style.fontSize = Math.max(10, cellPx * 0.5) + 'px';
+          cell.dataset.r = r; cell.dataset.c = c;
+
+          /* Click — reveal or chord */
+          cell.addEventListener('click', onCellClick);
+          /* Right-click — flag */
+          cell.addEventListener('contextmenu', e => { e.preventDefault(); onFlag(r, c); });
+          /* Long press (mobile) */
+          let pressTimer = null;
+          cell.addEventListener('pointerdown', e => {
+            pressTimer = setTimeout(() => { pressTimer = null; onFlag(r, c); }, 500);
+          });
+          cell.addEventListener('pointerup',   () => { clearTimeout(pressTimer); pressTimer = null; });
+          cell.addEventListener('pointerleave',() => { clearTimeout(pressTimer); pressTimer = null; });
+
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    function getCellEl(r, c) {
+      return document.querySelector(`.ms-cell[data-r="${r}"][data-c="${c}"]`);
+    }
+
+    function renderCell(r, c) {
+      const cell = G.board[r][c];
+      const el   = getCellEl(r, c);
+      if (!el) return;
+      el.className = 'ms-cell';
+      el.textContent = '';
+      el.style.cursor = 'pointer';
+
+      if (cell.revealed) {
+        el.classList.add('revealed');
+        el.style.cursor = 'default';
+        if (cell.mine) {
+          el.classList.add('mine-shown');
+          el.textContent = '💣';
+        } else if (cell.adj > 0) {
+          el.textContent = cell.adj;
+          el.classList.add(NUM_COLORS[cell.adj]);
+        }
+      } else if (cell.flag) {
+        el.classList.add('flagged');
+        el.textContent = '🚩';
+      }
+    }
+
+    /* ── INPUT HANDLERS ── */
+    function onCellClick(e) {
+      const r = parseInt(this.dataset.r);
+      const c = parseInt(this.dataset.c);
+      if (G.state === 'won' || G.state === 'lost') return;
+      const cell = G.board[r][c];
+      if (cell.flag) return;
+
+      if (G.firstClick) {
+        G.firstClick = false;
+        placeMines(r, c);
+        G.state = 'playing';
+        startTimer();
+        document.getElementById('ms-restart-btn').textContent = '😊';
+      }
+
+      if (cell.revealed) {
+        /* Chord click — count adjacent flags */
+        let flagCount = 0;
+        eachNeighbour(r, c, (nr, nc) => { if (G.board[nr][nc].flag) flagCount++; });
+        if (flagCount === cell.adj) chordReveal(r, c);
+        return;
+      }
+
+      reveal(r, c);
+    }
+
+    function onFlag(r, c) {
+      if (G.state === 'won' || G.state === 'lost') return;
+      if (G.firstClick) return; /* No flagging before first reveal */
+      const cell = G.board[r][c];
+      if (cell.revealed) return;
+      cell.flag = !cell.flag;
+      G.minesLeft += cell.flag ? -1 : 1;
+      document.getElementById('mine-count').textContent = G.minesLeft;
+      renderCell(r, c);
+    }
+
+    /* ── REVEAL LOGIC ── */
+    function reveal(r, c) {
+      const cell = G.board[r][c];
+      if (cell.revealed || cell.flag) return;
+      cell.revealed = true;
+
+      if (cell.mine) {
+        /* Hit a mine */
+        stopTimer();
+        G.state = 'lost';
+        cell.adj = 0; /* suppress number display */
+        renderCell(r, c);
+        const el = getCellEl(r, c);
+        if (el) el.classList.add('mine-hit');
+        revealAllMines(r, c);
+        recordLoss(G.diff);
+        setTimeout(() => showResult(false), 800);
+        document.getElementById('ms-restart-btn').textContent = '😵';
+        return;
+      }
+
+      renderCell(r, c);
+      const el = getCellEl(r, c);
+      if (el) { el.classList.add('reveal-anim'); el.addEventListener('animationend', () => el.classList.remove('reveal-anim'), { once:true }); }
+
+      /* Flood-fill empty cells */
+      if (cell.adj === 0) {
+        eachNeighbour(r, c, (nr, nc) => {
+          if (!G.board[nr][nc].revealed && !G.board[nr][nc].flag) reveal(nr, nc);
+        });
+      }
+
+      checkWin();
+    }
+
+    function chordReveal(r, c) {
+      eachNeighbour(r, c, (nr, nc) => {
+        if (!G.board[nr][nc].revealed && !G.board[nr][nc].flag) reveal(nr, nc);
+      });
+    }
+
+    function revealAllMines(hitR, hitC) {
+      const { rows, cols } = G.cfg;
+      for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+        const cell = G.board[r][c];
+        if (cell.mine && !(r===hitR && c===hitC)) {
+          if (!cell.flag) { cell.revealed = true; renderCell(r, c); }
+        }
+        /* Remove wrong flags */
+        if (cell.flag && !cell.mine) {
+          cell.flag = false; cell.revealed = true;
+          const el = getCellEl(r, c);
+          if (el) { el.className='ms-cell revealed'; el.textContent='❌'; }
+        }
+      }
+    }
+
+    /* ── WIN CHECK ── */
+    function checkWin() {
+      const { rows, cols, mines } = G.cfg;
+      let unrevealed = 0;
+      for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+        if (!G.board[r][c].revealed) unrevealed++;
+      }
+      if (unrevealed === mines) {
+        stopTimer();
+        G.state = 'won';
+        recordWin(G.diff, G.timerSeconds);
+        document.getElementById('ms-restart-btn').textContent = '😎';
+        /* Auto-flag remaining mines */
+        for (let r=0; r<rows; r++) for (let c=0; c<cols; c++) {
+          if (G.board[r][c].mine && !G.board[r][c].flag) {
+            G.board[r][c].flag = true; renderCell(r, c);
+          }
+        }
+        G.minesLeft = 0;
+        document.getElementById('mine-count').textContent = 0;
+        setTimeout(() => showResult(true), 600);
+      }
+    }
+
+    /* ── RESULT OVERLAY ── */
+    function showResult(won) {
+      const ds = getDS(G.diff);
+      document.getElementById('ms-result-icon').textContent  = won ? '🎉' : '💥';
+      document.getElementById('ms-result-title').textContent = won ? 'Board cleared!' : 'Boom! Mine hit.';
+      document.getElementById('ms-result-sub').textContent   = won
+        ? `Finished in ${fmtTime(G.timerSeconds)}`
+        : `The word was out there…`;
+      document.getElementById('msr-played').textContent = ds.played;
+      document.getElementById('msr-won').textContent    = ds.won;
+      document.getElementById('msr-best').textContent   = fmtTime(ds.best);
+      document.getElementById('ms-result-overlay').classList.remove('hidden');
+    }
+
+    /* ── START GAME ── */
+    function startGame(diff) {
+      const cfg = DIFFS[diff];
+      G = {
+        diff, cfg,
+        board: createEmptyBoard(cfg.rows, cfg.cols),
+        state: 'idle',
+        minesLeft: cfg.mines,
+        timerInterval: null,
+        timerSeconds: 0,
+        firstClick: true,
+      };
+
+      showScreen('game');
+      document.getElementById('ms-diff-label').textContent = `${cfg.label} · ${cfg.cols}×${cfg.rows} · ${cfg.mines} mines`;
+      document.getElementById('mine-count').textContent = cfg.mines;
+      document.getElementById('timer-val').textContent  = '0:00';
+      document.getElementById('ms-restart-btn').textContent = '😊';
+      document.getElementById('ms-result-overlay').classList.add('hidden');
+
+      buildGrid();
+    }
+
+    /* ── SCREEN MANAGER ── */
+    function showScreen(name) {
+      document.querySelectorAll('.ms-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`ms-${name}-screen`).classList.add('active');
+    }
+
+    /* ── CARD STATS ── */
+    function refreshCardStats() {
+      Object.keys(DIFFS).forEach(d => {
+        const s  = getDS(d);
+        const el = document.getElementById(`ms-stat-${d}`);
+        if (!el) return;
+        el.textContent = s.played
+          ? `${s.won}/${s.played} wins${s.best !== null ? ` · 🏆${fmtTime(s.best)}` : ''}`
+          : 'No games yet';
+      });
+    }
+
+    /* ── TOAST ── */
+    function showToast(msg) {
+      const el = document.createElement('div'); el.className='ms-toast'; el.textContent=msg;
+      document.getElementById('ms-toast-container').appendChild(el);
+      setTimeout(() => el.remove(), 2300);
+    }
+
+    /* ── INIT ── */
+    document.addEventListener('DOMContentLoaded', () => {
+
+      /* Difficulty card clicks */
+      document.querySelectorAll('.ms-diff-card').forEach(btn =>
+        btn.addEventListener('click', () => startGame(btn.dataset.diff))
+      );
+
+      /* Back button */
+      document.getElementById('ms-back-btn').addEventListener('click', () => {
+        stopTimer();
+        document.getElementById('ms-result-overlay').classList.add('hidden');
+        showScreen('diff');
+        refreshCardStats();
+      });
+
+      /* Restart / smiley button */
+      document.getElementById('ms-restart-btn').addEventListener('click', () => {
+        if (G.diff) {
+          document.getElementById('ms-result-overlay').classList.add('hidden');
+          startGame(G.diff);
+        }
+      });
+
+      /* Result overlay buttons */
+      document.getElementById('ms-play-again').addEventListener('click', () => {
+        document.getElementById('ms-result-overlay').classList.add('hidden');
+        startGame(G.diff);
+      });
+      document.getElementById('ms-change-diff').addEventListener('click', () => {
+        stopTimer();
+        document.getElementById('ms-result-overlay').classList.add('hidden');
+        showScreen('diff');
+        refreshCardStats();
+      });
+
+      /* How to play */
+      document.getElementById('ms-howto-btn').addEventListener('click',
+        () => document.getElementById('ms-howto-overlay').classList.remove('hidden')
+      );
+      document.getElementById('ms-howto-close').addEventListener('click',
+        () => document.getElementById('ms-howto-overlay').classList.add('hidden')
+      );
+      document.getElementById('ms-howto-overlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) document.getElementById('ms-howto-overlay').classList.add('hidden');
+      });
+
+      refreshCardStats();
+    });
+  </script>
+</body>
+</html>
