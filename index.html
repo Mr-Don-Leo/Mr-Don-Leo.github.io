@@ -63,8 +63,16 @@
         </li>
 
         <!-- Fun Stuff -->
-        <li>
-          <a href="fun.html">Fun Stuff</a>
+        <li class="dropdown">
+          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
+            Fun Stuff <span class="arrow">▾</span>
+          </button>
+          <div class="dropdown-menu" role="menu">
+            <a href="fun/wordle.html" role="menuitem">Wordle</a>
+            <a href="fun/minesweeper.html" role="menuitem">Minesweeper</a>
+            <hr />
+            <a href="fun.html" role="menuitem">All Games</a>
+          </div>
         </li>
 
         <!-- Contact -->
@@ -99,7 +107,14 @@
       <a href="contact.html">Suggest a feature</a>
     </div>
 
-    <a href="fun.html">Fun Stuff</a>
+    <button id="mobile-fun-btn">
+      Fun Stuff <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
+    </button>
+    <div id="mobile-fun-sub" class="mobile-sub">
+      <a href="fun/wordle.html">Wordle</a>
+      <a href="fun/minesweeper.html">Minesweeper</a>
+      <a href="fun.html">All Games</a>
+    </div>
     <a href="contact.html">Contact Us</a>
   </div>
 

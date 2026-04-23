@@ -114,6 +114,26 @@
 
 
 /* -------------------------------------------
+   4b. Mobile accordion — Fun Stuff sub-links
+   ------------------------------------------- */
+(function () {
+  const mobileFunBtn = document.getElementById('mobile-fun-btn');
+  const mobileFunSub = document.getElementById('mobile-fun-sub');
+  if (!mobileFunBtn || !mobileFunSub) return;
+
+  mobileFunBtn.addEventListener('click', function () {
+    mobileFunSub.classList.toggle('open');
+    const arrow = mobileFunBtn.querySelector('.arrow');
+    if (arrow) {
+      arrow.style.transform = mobileFunSub.classList.contains('open')
+        ? 'rotate(180deg)'
+        : 'rotate(0deg)';
+    }
+  });
+})();
+
+
+/* -------------------------------------------
    5. Active nav link (highlight current page)
    ------------------------------------------- */
 (function () {
