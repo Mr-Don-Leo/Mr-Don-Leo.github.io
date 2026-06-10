@@ -112,6 +112,8 @@ const escapeHtml = (value = "") =>
     return entities[character];
   });
 
+const escapeAttribute = escapeHtml;
+
 const renderTags = (tags = []) =>
   tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
 
@@ -130,6 +132,19 @@ const markdownToHtml = (markdown = "") =>
 
       if (!trimmed) {
         return "";
+      }
+
+      const imageMatch = trimmed.match(/^!\[([^\]]*)\]\((\S+)(?:\s+"([^"]*)")?\)$/);
+      if (imageMatch) {
+        const [, alt, src, title] = imageMatch;
+        const caption = title || alt;
+
+        return `
+          <figure>
+            <img src="${escapeAttribute(src)}" alt="${escapeAttribute(alt)}">
+            ${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ""}
+          </figure>
+        `;
       }
 
       if (trimmed.startsWith("### ")) {

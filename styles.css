@@ -23,6 +23,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   background:
     radial-gradient(circle at 8% 12%, rgba(255, 209, 102, 0.36), transparent 24rem),
@@ -810,7 +811,8 @@ h3 {
 }
 
 .post-body p,
-.post-body ul {
+.post-body ul,
+.post-body figure {
   margin: 0 0 24px;
 }
 
@@ -820,6 +822,30 @@ h3 {
 
 .post-body li + li {
   margin-top: 8px;
+}
+
+.post-body figure {
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 6px 6px 0 rgba(18, 18, 18, 0.12);
+}
+
+.post-body img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
+  background: #050a0a;
+}
+
+.post-body figcaption {
+  padding: 12px 14px;
+  border-top: 2px solid var(--ink);
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .modal {
@@ -933,10 +959,17 @@ h3 {
   }
 
   .nav-links {
-    max-width: 260px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+    width: 100%;
+    max-width: none;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
     border-radius: 20px;
+    scrollbar-width: none;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
   }
 
   .hero,
@@ -953,7 +986,7 @@ h3 {
   }
 
   .hero-card {
-    min-height: 460px;
+    min-height: auto;
   }
 
   .error-hero {
@@ -978,7 +1011,7 @@ h3 {
   }
 
   .section {
-    padding: 62px 0;
+    padding: 52px 0;
   }
 
   .hero {
@@ -986,12 +1019,46 @@ h3 {
   }
 
   h1 {
-    font-size: clamp(2.9rem, 16vw, 4.8rem);
+    font-size: clamp(2.45rem, 12vw, 3.8rem);
+  }
+
+  h2 {
+    font-size: clamp(1.9rem, 9vw, 3rem);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  .hero-text {
+    margin-top: 20px;
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .hero-actions,
+  .contact-actions {
+    width: 100%;
+    margin-top: 24px;
+  }
+
+  .hero-actions .button,
+  .contact-actions .button {
+    flex: 1 1 100%;
   }
 
   .hero-card {
     padding: 18px;
     box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .hero-card::before {
+    width: 92px;
+    height: 92px;
+  }
+
+  .orbit {
+    inset: 10px;
   }
 
   .stats {
@@ -1000,6 +1067,7 @@ h3 {
 
   .profile-photo {
     width: min(100%, 240px);
+    margin: 34px auto 24px;
   }
 
   .work-card,
@@ -1031,6 +1099,7 @@ h3 {
 
   .modal-panel {
     max-height: calc(100vh - 24px);
+    width: 100%;
     padding: 26px 20px;
     box-shadow: 6px 6px 0 var(--ink);
   }
@@ -1048,6 +1117,14 @@ h3 {
   .modal .post-body {
     font-size: 1rem;
     line-height: 1.72;
+  }
+
+  .post-body img {
+    max-height: 360px;
+  }
+
+  .post-body figcaption {
+    font-size: 0.78rem;
   }
 
   .content-card {

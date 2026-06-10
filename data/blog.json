@@ -3,8 +3,8 @@
     {
       "title": "Starting Fresh",
       "date": "2026-06-10",
-      "excerpt": "Notes on rebuilding this portfolio as a simple static site with editable content. ",
-      "body": "This site is being rebuilt around a simpler structure: static pages, JSON content, and an admin dashboard for updates.\n\n\n\nI am seeing how big I can grow this site!",
+      "excerpt": "Notes on rebuilding this portfolio as a simpler, faster personal site.",
+      "body": "This site is being rebuilt around a cleaner structure, faster pages, and a design that feels closer to how I want to present my work.\n\nI am seeing how big I can grow this site.",
       "tags": [
         "Portfolio",
         "GitHub Pages"
