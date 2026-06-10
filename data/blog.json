@@ -9,15 +9,16 @@
         "Portfolio",
         "GitHub Pages"
       ],
-      "published": true
+      "published": true,
+      "slug": "my-first-post"
     },
     {
-      "published": false,
+      "published": true,
       "title": "A fun USB stick",
       "slug": "fun-usb-stick",
       "date": "2026-06-10",
       "excerpt": "A compact USB archive can feel like something out of a secure operations room: a custom access screen, a passcode gate, hidden files, and a polished interface that turns a simple drive into a miniature digital vault.",
-      "body": "This archive is designed to make a USB drive feel more secure, intentional, and cinematic. When opened, it presents a custom access interface that asks for a passcode before revealing the archive entry point. The private folder is hidden from normal browsing, giving the drive a cleaner and more controlled feel.\n\nIt is important to understand the difference between visual protection and real encryption. A hidden folder and passcode screen can discourage casual access, but true USB encryption requires software such as VeraCrypt, BitLocker, or another encryption system. Encryption protects the actual data so that even if someone bypasses the interface, the files remain unreadable without the correct password.\n\nThe coolest part is that AI can help build this kind of custom experience quickly: designing the interface, writing the HTML, creating passcode logic, generating helper scripts, and adapting the setup as the idea evolves. What used to require a mix of coding, design, and system knowledge can now be shaped conversationally, step by step, into something personal and functional.",
+      "body": "This archive is designed to make a USB drive feel more secure, intentional, and cinematic. When opened, it presents a custom access interface that asks for a passcode before revealing the archive entry point. The private folder is hidden from normal browsing, giving the drive a cleaner and more controlled feel.\n\n![Image of a Archive Vault screen](/assets/uploads/screenshot-2026-06-10-213649.png \"The Archive\")\n\nIt is important to understand the difference between visual protection and real encryption. A hidden folder and passcode screen can discourage casual access, but true USB encryption requires software such as VeraCrypt, BitLocker, or another encryption system. Encryption protects the actual data so that even if someone bypasses the interface, the files remain unreadable without the correct password.\n\nThe coolest part is that AI can help build this kind of custom experience quickly: designing the interface, writing the HTML, creating passcode logic, generating helper scripts, and adapting the setup as the idea evolves. What used to require a mix of coding, design, and system knowledge can now be shaped conversationally, step by step, into something personal and functional.",
       "tags": [
         "Small Project",
         "AI"
