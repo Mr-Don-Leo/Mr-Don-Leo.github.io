@@ -1,0 +1,50 @@
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+site_url: "https://mr-don-leo.netlify.app"
+display_url: "https://mr-don-leo.netlify.app"
+logo_url: "/assets/maksim-profile.png"
+
+collections:
+  - name: "content"
+    label: "Site Content"
+    files:
+      - name: "projects"
+        label: "Projects"
+        file: "data/projects.json"
+        format: "json"
+        fields:
+          - label: "Projects"
+            name: "projects"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Status", name: "status", widget: "string", required: false }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Tags", name: "tags", widget: "list", field: { label: "Tag", name: "tag", widget: "string" }, required: false }
+              - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
+              - { label: "Live URL", name: "liveUrl", widget: "string", required: false }
+              - { label: "Repository URL", name: "repoUrl", widget: "string", required: false }
+              - { label: "Image", name: "image", widget: "image", required: false }
+      - name: "blog"
+        label: "Blog Posts"
+        file: "data/blog.json"
+        format: "json"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+              - { label: "Excerpt", name: "excerpt", widget: "text" }
+              - { label: "Body", name: "body", widget: "markdown" }
+              - { label: "Tags", name: "tags", widget: "list", field: { label: "Tag", name: "tag", widget: "string" }, required: false }
+              - { label: "Published", name: "published", widget: "boolean", default: true }

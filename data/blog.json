@@ -1,0 +1,12 @@
+{
+  "posts": [
+    {
+      "title": "Starting Fresh",
+      "date": "2026-06-10",
+      "excerpt": "Notes on rebuilding this portfolio as a simple static site with editable content.",
+      "body": "This site is being rebuilt around a simpler structure: static pages, JSON content, and an admin dashboard for updates.",
+      "tags": ["Portfolio", "GitHub Pages"],
+      "published": true
+    }
+  ]
+}

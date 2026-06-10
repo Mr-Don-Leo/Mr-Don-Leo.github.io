@@ -1,0 +1,24 @@
+{
+  "projects": [
+    {
+      "title": "Portfolio Site",
+      "status": "Live",
+      "description": "A static GitHub Pages portfolio with animated UI, project sections, blog support, and CMS-managed content.",
+      "tags": ["HTML", "CSS", "JavaScript", "GitHub Pages"],
+      "featured": true,
+      "liveUrl": "https://mr-don-leo.github.io",
+      "repoUrl": "https://github.com/Mr-Don-Leo/Mr-Don-Leo.github.io",
+      "image": ""
+    },
+    {
+      "title": "Haditi Gifts Web Work",
+      "status": "Current role",
+      "description": "Web application development, delivery coordination, code quality, and project lifecycle ownership.",
+      "tags": ["Web Applications", "Project Management", "Frontend"],
+      "featured": true,
+      "liveUrl": "",
+      "repoUrl": "",
+      "image": ""
+    }
+  ]
+}

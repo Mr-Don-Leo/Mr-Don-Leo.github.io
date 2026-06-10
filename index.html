@@ -1,168 +1,224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Don Leo — Developer &amp; Creator. Personal website." />
-  <title>Don Leo</title>
-  <link rel="icon" type="image/png" href="Images/logo2.png" />
-
-  <!-- Tailwind CSS via Play CDN (no build step required) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'dp-black':   '#0a0a0a',
-            'dp-navy':    '#0f0e32',
-            'dp-purple':  '#342048',
-            'dp-blue':    '#2c2a7b',
-            'accent':     '#a855f7',
-            'accent-2':   '#c026d3',
-            'neon':       '#d946ef',
-          }
-        }
-      }
-    }
-  </script>
-
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-
-  <!-- ==========================================
-       HEADER / NAV
-       ========================================== -->
-  <header id="site-header">
-    <!-- Logo -->
-    <a href="index.html" class="nav-logo">
-      <img src="Images/logo2.png" alt="Don Leo" class="nav-logo-img" />
-    </a>
-
-    <!-- Desktop nav links -->
-    <nav aria-label="Main navigation">
-      <ul class="nav-links">
-        <!-- Home -->
-        <li>
-          <a href="index.html">Home</a>
-        </li>
-
-        <!-- Features dropdown -->
-        <li class="dropdown">
-          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
-            Features <span class="arrow">▾</span>
-          </button>
-          <div class="dropdown-menu" role="menu">
-            <a href="features/image-converter.html" role="menuitem">Image Converter</a>
-            <a href="features/pomodoro.html" role="menuitem">Pomodoro Timer</a>
-            <a href="features/markdown-editor.html" role="menuitem">Markdown Editor</a>
-            <hr />
-            <a href="contact.html" role="menuitem">Suggest a feature</a>
-          </div>
-        </li>
-
-        <!-- Fun Stuff -->
-        <li class="dropdown">
-          <button class="dropdown-btn" aria-haspopup="true" aria-expanded="false">
-            Fun Stuff <span class="arrow">▾</span>
-          </button>
-          <div class="dropdown-menu" role="menu">
-            <a href="fun/wordle.html" role="menuitem">Wordle</a>
-            <a href="fun/minesweeper.html" role="menuitem">Minesweeper</a>
-            <hr />
-            <a href="fun.html" role="menuitem">All Games</a>
-          </div>
-        </li>
-
-        <!-- Contact -->
-        <li>
-          <a href="contact.html">Contact Us</a>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Mobile hamburger button -->
-    <button id="hamburger" class="hamburger" aria-label="Open menu" aria-expanded="false">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portfolio of Maksim Babayan, Software Engineer and DevOps Engineer in Dubai.">
+    <title>Maksim Babayan | Software Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="scroll-field" aria-hidden="true">
       <span></span>
       <span></span>
       <span></span>
-    </button>
-  </header>
-
-  <!-- ==========================================
-       MOBILE OVERLAY MENU
-       ========================================== -->
-  <div id="mobile-menu" class="mobile-menu" aria-hidden="true">
-    <a href="index.html">Home</a>
-
-    <!-- Features accordion -->
-    <button id="mobile-features-btn">
-      Features <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
-    </button>
-    <div id="mobile-features-sub" class="mobile-sub">
-      <a href="features/image-converter.html">Image Converter</a>
-      <a href="features/pomodoro.html">Pomodoro Timer</a>
-      <a href="features/markdown-editor.html">Markdown Editor</a>
-      <a href="contact.html">Suggest a feature</a>
     </div>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Maksim Babayan home">
+        <span>MB</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="projects.html">Projects</a>
+        <a href="blog.html">Blog</a>
+        <a href="#skills">Skills</a>
+        <a href="#journey">Journey</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-    <button id="mobile-fun-btn">
-      Fun Stuff <span class="arrow" style="transition:transform 0.25s ease;">▾</span>
-    </button>
-    <div id="mobile-fun-sub" class="mobile-sub">
-      <a href="fun/wordle.html">Wordle</a>
-      <a href="fun/minesweeper.html">Minesweeper</a>
-      <a href="fun.html">All Games</a>
-    </div>
-    <a href="contact.html">Contact Us</a>
-  </div>
-
-  <!-- ==========================================
-       HERO SECTION
-       ========================================== -->
-  <main>
-    <section class="hero" aria-label="Hero">
-      <!-- Ambient glow orbs (purely decorative) -->
-      <div class="orb orb-1" aria-hidden="true"></div>
-      <div class="orb orb-2" aria-hidden="true"></div>
-      <div class="orb orb-3" aria-hidden="true"></div>
-
-      <div class="hero-content">
-        <p class="hero-badge">&#10022; Welcome to my corner of the internet</p>
-
-        <h1 class="hero-title">
-          Hi, I'm<br />
-          <span class="gradient-text">Don Leo</span>
-        </h1>
-
-        <p class="hero-subtitle">
-          Developer &amp; creator building things I find interesting —
-          features, experiments, and a little fun stuff along the way.
-        </p>
-
-        <div class="btn-group">
-          <a href="contact.html" class="btn-primary">Get in Touch</a>
-          <a href="fun.html" class="btn-secondary">Explore Fun Stuff</a>
+    <main id="top">
+      <section class="hero section">
+        <div class="hero-copy">
+          <p class="eyebrow">Dubai based software engineer</p>
+          <h1>Software engineer focused on web delivery, infrastructure, and practical product work.</h1>
+          <p class="hero-text">
+            I am Maksim Babayan, a software engineer at Haditi Gifts and DevOps engineer at Genesis Solutions.
+            I build web applications, manage delivery, and maintain the infrastructure behind production systems.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#work">See the work</a>
+            <a class="button ghost" href="projects.html">Projects</a>
+            <a class="button ghost" href="#contact">Contact</a>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
 
-  <!-- ==========================================
-       FOOTER
-       ========================================== -->
-  <footer>
-    <p>
-      &copy; <span id="year"></span> Don Leo &mdash;
-      <a href="https://github.com/Mr-Don-Leo" target="_blank" rel="noopener">GitHub</a>
-    </p>
-  </footer>
+        <aside class="hero-card" aria-label="Profile summary">
+          <div class="orbit" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <img src="assets/maksim-profile.png" alt="Maksim Babayan" class="profile-photo">
+          <div class="status-pill">
+            <span></span>
+            Open to relevant engineering work
+          </div>
+          <dl class="stats">
+            <div>
+              <dt>2</dt>
+              <dd>Active engineering roles</dd>
+            </div>
+            <div>
+              <dt>Full</dt>
+              <dd>Project lifecycle</dd>
+            </div>
+            <div>
+              <dt>42</dt>
+              <dd>Abu Dhabi student</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
 
-  <script src="script.js"></script>
-  <script>
-    // Set current year in footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-</body>
+      <section class="section content-preview-section" id="projects">
+        <div class="section-heading">
+          <p class="eyebrow">Projects</p>
+          <h2>Selected work.</h2>
+        </div>
+        <div class="content-grid" id="project-preview" data-limit="3"></div>
+        <div class="section-action">
+          <a class="button ghost" href="projects.html">All projects</a>
+        </div>
+      </section>
+
+      <section class="marquee" aria-label="Core strengths">
+        <div class="marquee-track">
+          <span>Design</span>
+          <span>CSS</span>
+          <span>HTML</span>
+          <span>Node.js</span>
+          <span>SQL</span>
+          <span>CI/CD</span>
+          <span>Cloud infrastructure</span>
+          <span>Team leadership</span>
+          <span>Design</span>
+          <span>CSS</span>
+          <span>HTML</span>
+          <span>Node.js</span>
+          <span>SQL</span>
+          <span>CI/CD</span>
+          <span>Cloud infrastructure</span>
+          <span>Team leadership</span>
+        </div>
+      </section>
+
+      <section class="section split" id="work">
+        <div>
+          <p class="eyebrow">What I do</p>
+          <h2>Web applications, delivery, and infrastructure.</h2>
+        </div>
+        <div class="work-grid">
+          <article class="work-card highlight">
+            <span class="card-index">01</span>
+            <h3>Product Engineering</h3>
+            <p>
+              Develop and maintain web applications at Haditi Gifts while owning the full project lifecycle:
+              planning, delivery, code quality, and team coordination.
+            </p>
+          </article>
+          <article class="work-card">
+            <span class="card-index">02</span>
+            <h3>DevOps Systems</h3>
+            <p>
+              Manage cloud infrastructure and CI/CD pipelines at Genesis Solutions so environments stay
+              stable, secure, and ready for releases.
+            </p>
+          </article>
+          <article class="work-card">
+            <span class="card-index">03</span>
+            <h3>Project Management</h3>
+            <p>
+              Plan scope, coordinate developers, track delivery, and keep technical work aligned with business goals.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section skills-section" id="skills">
+        <div class="section-heading">
+          <p class="eyebrow">Stack</p>
+          <h2>Tools I reach for.</h2>
+        </div>
+        <div class="skill-board">
+          <button class="skill active" data-skill="frontend">HTML</button>
+          <button class="skill" data-skill="frontend">CSS</button>
+          <button class="skill" data-skill="backend">Node.js</button>
+          <button class="skill" data-skill="backend">SQL</button>
+          <button class="skill" data-skill="systems">CI/CD</button>
+          <button class="skill" data-skill="systems">Cloud</button>
+          <button class="skill" data-skill="core">C</button>
+          <button class="skill" data-skill="core">C++</button>
+          <button class="skill" data-skill="core">Algorithms</button>
+          <button class="skill" data-skill="people">Leadership</button>
+        </div>
+        <p class="skill-note" id="skill-note">
+          Frontend implementation for responsive, maintainable pages.
+        </p>
+      </section>
+
+      <section class="section timeline-section" id="journey">
+        <div class="section-heading">
+          <p class="eyebrow">Journey</p>
+          <h2>Experience across product work, systems, and low-level programming.</h2>
+        </div>
+        <div class="timeline">
+          <article class="timeline-item">
+            <span class="dot"></span>
+            <p class="date">Jan 2025 - Present</p>
+            <h3>Software Engineer, Haditi Gifts</h3>
+            <p>
+              Building and maintaining web applications, managing delivery, and leading a team of three developers.
+            </p>
+          </article>
+          <article class="timeline-item">
+            <span class="dot"></span>
+            <p class="date">Dec 2022 - Present</p>
+            <h3>DevOps Engineer, Genesis Solutions</h3>
+            <p>
+              Managing infrastructure and CI/CD pipelines across environments with stability and security in focus.
+            </p>
+          </article>
+          <article class="timeline-item">
+            <span class="dot"></span>
+            <p class="date">Oct 2023 - Present</p>
+            <h3>Computer Science, 42 Abu Dhabi</h3>
+            <p>
+              Focused on low-level programming in C, algorithms, and structured problem solving.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div>
+          <p class="eyebrow">Next</p>
+          <h2>For engineering, DevOps, or web delivery work.</h2>
+        </div>
+        <div class="contact-panel">
+          <p>
+            I am based in Dubai and fluent in Russian, Armenian, and English.
+            My work covers web applications, cloud infrastructure, CI/CD, and project delivery.
+          </p>
+          <div class="contact-actions">
+            <a class="button primary" href="https://t.me/baduser" target="_blank" rel="noreferrer">Telegram</a>
+            <a class="button ghost" href="https://www.linkedin.com/in/maksim-babayan/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a class="button ghost" href="https://github.com/Mr-Don-Leo" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Designed and built by Maksim Babayan.</p>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
