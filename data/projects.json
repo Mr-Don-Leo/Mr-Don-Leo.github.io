@@ -3,7 +3,7 @@
     {
       "title": "Portfolio Site",
       "status": "Live",
-      "description": "A static GitHub Pages portfolio with animated UI, project sections, blog support, and CMS-managed content.",
+      "description": "A personal portfolio with animated UI, project sections, blog support, and a clean publishing flow.",
       "tags": ["HTML", "CSS", "JavaScript", "GitHub Pages"],
       "featured": true,
       "liveUrl": "https://mr-don-leo.github.io",
