@@ -564,6 +564,95 @@ h3 {
   box-shadow: 10px 10px 0 var(--mint);
 }
 
+.not-found-page {
+  min-height: 100vh;
+}
+
+.error-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1.22fr);
+  gap: 34px;
+  align-items: center;
+  min-height: calc(100vh - 82px);
+  padding-top: 40px;
+}
+
+.error-copy h1 {
+  font-size: clamp(3.2rem, 8vw, 6.8rem);
+}
+
+.runner-card {
+  padding: 26px;
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow), 10px 10px 0 var(--ink);
+}
+
+.runner-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.runner-topbar h2 {
+  font-size: clamp(1.8rem, 3vw, 3rem);
+}
+
+.runner-score {
+  min-width: 108px;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  text-align: right;
+  box-shadow: 4px 4px 0 rgba(18, 18, 18, 0.16);
+}
+
+.runner-score span {
+  display: block;
+  color: rgba(18, 18, 18, 0.68);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.runner-score strong {
+  display: block;
+  margin-top: 4px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.8rem;
+}
+
+#runner-game {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 920 / 300;
+  border: 2px solid var(--ink);
+  background: rgba(255, 255, 255, 0.64);
+  touch-action: manipulation;
+}
+
+.runner-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.runner-controls .button {
+  flex: 0 0 auto;
+}
+
+.runner-controls p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
 .page-hero {
   padding-top: 90px;
   padding-bottom: 36px;
@@ -853,6 +942,7 @@ h3 {
   .hero,
   .split,
   .contact-section,
+  .error-hero,
   .content-grid,
   .blog-grid {
     grid-template-columns: 1fr;
@@ -864,6 +954,10 @@ h3 {
 
   .hero-card {
     min-height: 460px;
+  }
+
+  .error-hero {
+    min-height: auto;
   }
 }
 
@@ -911,8 +1005,23 @@ h3 {
   .work-card,
   .timeline-item,
   .contact-panel,
+  .runner-card,
   .content-card-body {
     padding: 22px;
+  }
+
+  .runner-topbar,
+  .runner-controls {
+    flex-direction: column;
+  }
+
+  .runner-score {
+    width: 100%;
+    text-align: left;
+  }
+
+  #runner-game {
+    aspect-ratio: 16 / 8.5;
   }
 
   .modal {

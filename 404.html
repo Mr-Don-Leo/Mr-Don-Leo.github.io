@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Page not found.">
+    <title>404 | Maksim Babayan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="not-found-page">
+    <div class="scroll-field" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Maksim Babayan home">
+        <span>MB</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html#work">Work</a>
+        <a href="projects.html">Projects</a>
+        <a href="blog.html">Blog</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section error-hero">
+        <div class="error-copy">
+          <p class="eyebrow">404</p>
+          <h1>Page not found.</h1>
+          <p class="hero-text">
+            The route does not exist. You can go back home, or play a quick runner while you are here.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="index.html">Home</a>
+            <a class="button ghost" href="projects.html">Projects</a>
+          </div>
+        </div>
+
+        <section class="runner-card" aria-label="404 runner game">
+          <div class="runner-topbar">
+            <div>
+              <p class="eyebrow">Runner</p>
+              <h2>Jump the blockers.</h2>
+            </div>
+            <div class="runner-score" aria-live="polite">
+              <span>Score</span>
+              <strong id="runner-score">0</strong>
+            </div>
+          </div>
+          <canvas id="runner-game" width="920" height="300" aria-label="Runner game canvas"></canvas>
+          <div class="runner-controls">
+            <button class="button primary" type="button" id="runner-start">Start</button>
+            <p>Press Space, Arrow Up, W, or tap the game to jump.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const canvas = document.querySelector("#runner-game");
+        const scoreEl = document.querySelector("#runner-score");
+        const startButton = document.querySelector("#runner-start");
+        const ctx = canvas.getContext("2d");
+        const state = {
+          running: false,
+          over: false,
+          score: 0,
+          speed: 6,
+          frame: 0,
+          lastTime: 0,
+          obstacles: [],
+          player: {
+            x: 72,
+            y: 0,
+            width: 38,
+            height: 46,
+            velocity: 0,
+            grounded: true
+          }
+        };
+
+        const ground = () => canvas.height - 58;
+        const reset = () => {
+          state.running = true;
+          state.over = false;
+          state.score = 0;
+          state.speed = 6;
+          state.frame = 0;
+          state.lastTime = performance.now();
+          state.obstacles = [];
+          state.player.y = ground() - state.player.height;
+          state.player.velocity = 0;
+          state.player.grounded = true;
+          startButton.textContent = "Restart";
+          scoreEl.textContent = "0";
+          requestAnimationFrame(loop);
+        };
+
+        const jump = () => {
+          if (!state.running || state.over) {
+            reset();
+            return;
+          }
+
+          if (!state.player.grounded) {
+            return;
+          }
+
+          state.player.velocity = -14;
+          state.player.grounded = false;
+        };
+
+        const spawnObstacle = () => {
+          const tall = Math.random() > 0.66;
+          state.obstacles.push({
+            x: canvas.width + 30,
+            y: ground() - (tall ? 54 : 34),
+            width: tall ? 24 : 34,
+            height: tall ? 54 : 34
+          });
+        };
+
+        const collides = (a, b) =>
+          a.x < b.x + b.width &&
+          a.x + a.width > b.x &&
+          a.y < b.y + b.height &&
+          a.y + a.height > b.y;
+
+        const drawPlayer = () => {
+          const p = state.player;
+          ctx.fillStyle = "#121212";
+          ctx.fillRect(p.x, p.y, p.width, p.height);
+          ctx.fillStyle = "#ffd166";
+          ctx.fillRect(p.x + 22, p.y + 9, 8, 8);
+          ctx.fillStyle = "#7bdcb5";
+          ctx.fillRect(p.x - 8, p.y + 28, 12, 8);
+        };
+
+        const draw = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.64)";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.strokeStyle = "#121212";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, ground());
+          ctx.lineTo(canvas.width, ground());
+          ctx.stroke();
+
+          ctx.fillStyle = "rgba(18, 18, 18, 0.12)";
+          for (let i = 0; i < 9; i += 1) {
+            const x = (i * 140 - (state.frame * state.speed * 0.45)) % (canvas.width + 140);
+            ctx.fillRect(x, ground() + 22, 54, 3);
+          }
+
+          drawPlayer();
+          state.obstacles.forEach((obstacle) => {
+            ctx.fillStyle = "#ff5d4f";
+            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            ctx.fillStyle = "#121212";
+            ctx.fillRect(obstacle.x + 6, obstacle.y + 6, obstacle.width - 12, 5);
+          });
+
+          if (!state.running) {
+            ctx.fillStyle = "#121212";
+            ctx.font = "800 24px Space Grotesk, sans-serif";
+            ctx.fillText("Press start to run", 32, 52);
+          }
+
+          if (state.over) {
+            ctx.fillStyle = "rgba(255, 252, 245, 0.92)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#121212";
+            ctx.font = "800 34px Space Grotesk, sans-serif";
+            ctx.fillText("Run ended", 32, 70);
+            ctx.font = "700 18px Inter, sans-serif";
+            ctx.fillText("Press Space or tap to restart.", 34, 108);
+          }
+        };
+
+        const endGame = () => {
+          state.running = false;
+          state.over = true;
+          startButton.textContent = "Restart";
+          draw();
+        };
+
+        const update = (delta) => {
+          state.frame += 1;
+          state.speed += delta * 0.0004;
+          state.score += Math.floor(delta * 0.02);
+          scoreEl.textContent = String(state.score);
+
+          const p = state.player;
+          p.velocity += 0.72;
+          p.y += p.velocity;
+
+          if (p.y >= ground() - p.height) {
+            p.y = ground() - p.height;
+            p.velocity = 0;
+            p.grounded = true;
+          }
+
+          if (state.frame % Math.max(48, Math.floor(105 - state.speed * 5)) === 0) {
+            spawnObstacle();
+          }
+
+          state.obstacles.forEach((obstacle) => {
+            obstacle.x -= state.speed;
+          });
+          state.obstacles = state.obstacles.filter((obstacle) => obstacle.x + obstacle.width > -10);
+
+          if (state.obstacles.some((obstacle) => collides(p, obstacle))) {
+            endGame();
+          }
+        };
+
+        const loop = (time) => {
+          if (!state.running) {
+            return;
+          }
+
+          const delta = Math.min(time - state.lastTime, 32);
+          state.lastTime = time;
+          update(delta);
+          draw();
+
+          if (state.running) {
+            requestAnimationFrame(loop);
+          }
+        };
+
+        startButton.addEventListener("click", reset);
+        canvas.addEventListener("pointerdown", jump);
+        document.addEventListener("keydown", (event) => {
+          if ([" ", "ArrowUp", "w", "W"].includes(event.key)) {
+            event.preventDefault();
+            jump();
+          }
+        });
+
+        state.player.y = ground() - state.player.height;
+        draw();
+      })();
+    </script>
+  </body>
+</html>
