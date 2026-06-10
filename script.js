@@ -78,6 +78,44 @@ const escapeHtml = (value = "") =>
 const renderTags = (tags = []) =>
   tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
 
+const slugify = (value = "") =>
+  String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const markdownToHtml = (markdown = "") =>
+  String(markdown)
+    .split(/\n{2,}/)
+    .map((block) => {
+      const trimmed = block.trim();
+
+      if (!trimmed) {
+        return "";
+      }
+
+      if (trimmed.startsWith("### ")) {
+        return `<h3>${escapeHtml(trimmed.slice(4))}</h3>`;
+      }
+
+      if (trimmed.startsWith("## ")) {
+        return `<h2>${escapeHtml(trimmed.slice(3))}</h2>`;
+      }
+
+      if (trimmed.startsWith("# ")) {
+        return `<h2>${escapeHtml(trimmed.slice(2))}</h2>`;
+      }
+
+      const lines = trimmed.split("\n");
+      if (lines.every((line) => line.trim().startsWith("- "))) {
+        return `<ul>${lines.map((line) => `<li>${escapeHtml(line.trim().slice(2))}</li>`).join("")}</ul>`;
+      }
+
+      return `<p>${escapeHtml(trimmed).replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("");
+
 const renderProjectCard = (project) => {
   const links = [
     project.liveUrl ? `<a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noreferrer">Live</a>` : "",
@@ -100,16 +138,23 @@ const renderProjectCard = (project) => {
   `;
 };
 
-const renderPostCard = (post) => `
-  <article class="content-card reveal">
+const renderPostCard = (post) => {
+  const slug = post.slug || slugify(post.title);
+
+  return `
+  <article class="content-card clickable-card reveal">
     <div class="content-card-body">
       <p class="content-status">${escapeHtml(post.date)}</p>
-      <h3>${escapeHtml(post.title)}</h3>
+      <h3><a href="post.html?slug=${escapeHtml(slug)}">${escapeHtml(post.title)}</a></h3>
       <p>${escapeHtml(post.excerpt)}</p>
       <div class="tag-list">${renderTags(post.tags)}</div>
+      <div class="content-links">
+        <a href="post.html?slug=${escapeHtml(slug)}">Read post</a>
+      </div>
     </div>
   </article>
 `;
+};
 
 const revealNewCards = (container) => {
   container.querySelectorAll(".reveal").forEach((target) => {
@@ -168,6 +213,60 @@ const loadPosts = async () => {
 
 loadProjects();
 loadPosts();
+
+const loadPost = async () => {
+  const target = document.querySelector("#post-view");
+
+  if (!target) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
+
+  if (!slug) {
+    target.innerHTML = `
+      <p class="eyebrow">Blog</p>
+      <h1>Post not found.</h1>
+      <p class="hero-text">No post slug was provided.</p>
+      <div class="section-action"><a class="button ghost" href="blog.html">Back to blog</a></div>
+    `;
+    return;
+  }
+
+  try {
+    const response = await fetch("data/blog.json");
+    const data = await response.json();
+    const posts = (Array.isArray(data.posts) ? data.posts : []).filter((post) => post.published);
+    const post = posts.find((item) => (item.slug || slugify(item.title)) === slug);
+
+    if (!post) {
+      target.innerHTML = `
+        <p class="eyebrow">Blog</p>
+        <h1>Post not found.</h1>
+        <p class="hero-text">This post may be unpublished or removed.</p>
+        <div class="section-action"><a class="button ghost" href="blog.html">Back to blog</a></div>
+      `;
+      return;
+    }
+
+    document.title = `${post.title} | Maksim Babayan`;
+    target.innerHTML = `
+      <a class="back-link" href="blog.html">Back to blog</a>
+      <header class="post-header">
+        <p class="eyebrow">${escapeHtml(post.date)}</p>
+        <h1>${escapeHtml(post.title)}</h1>
+        <p class="hero-text">${escapeHtml(post.excerpt)}</p>
+        <div class="tag-list">${renderTags(post.tags)}</div>
+      </header>
+      <div class="post-body">${markdownToHtml(post.body)}</div>
+    `;
+  } catch (error) {
+    target.innerHTML = `<p class="empty-state">Post could not be loaded.</p>`;
+  }
+};
+
+loadPost();
 
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on("init", (user) => {
