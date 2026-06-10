@@ -62,6 +62,43 @@ window.addEventListener(
 );
 updateScrollField();
 
+const setupMarquee = () => {
+  const track = document.querySelector(".marquee-track");
+  const source = document.querySelector("[data-marquee-source]");
+
+  if (!track || !source) {
+    return;
+  }
+
+  const fillTrack = () => {
+    track.querySelectorAll(".marquee-group[aria-hidden='true']").forEach((group) => group.remove());
+
+    const groupWidth = source.getBoundingClientRect().width;
+    const viewportWidth = window.innerWidth;
+
+    if (!groupWidth) {
+      return;
+    }
+
+    const copiesNeeded = Math.max(2, Math.ceil((viewportWidth * 2) / groupWidth) + 1);
+
+    for (let index = 1; index < copiesNeeded; index += 1) {
+      const clone = source.cloneNode(true);
+      clone.removeAttribute("data-marquee-source");
+      clone.setAttribute("aria-hidden", "true");
+      track.appendChild(clone);
+    }
+
+    track.style.setProperty("--marquee-distance", `${groupWidth}px`);
+    track.style.setProperty("--marquee-duration", `${Math.max(18, groupWidth / 42)}s`);
+  };
+
+  fillTrack();
+  window.addEventListener("resize", fillTrack);
+};
+
+setupMarquee();
+
 const escapeHtml = (value = "") =>
   String(value).replace(/[&<>"']/g, (character) => {
     const entities = {

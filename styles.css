@@ -395,9 +395,9 @@ h3 {
 
 .marquee-track {
   display: flex;
-  width: fit-content;
+  width: max-content;
   padding: 18px 0;
-  animation: marquee 28s linear infinite;
+  animation: marquee var(--marquee-duration, 28s) linear infinite;
   will-change: transform;
 }
 
@@ -922,7 +922,7 @@ h3 {
 
 @keyframes marquee {
   to {
-    transform: translateX(-50%);
+    transform: translateX(calc(var(--marquee-distance, 0px) * -1));
   }
 }
 
