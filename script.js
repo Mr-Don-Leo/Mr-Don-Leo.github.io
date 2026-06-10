@@ -142,14 +142,14 @@ const renderPostCard = (post) => {
   const slug = post.slug || slugify(post.title);
 
   return `
-  <article class="content-card clickable-card reveal">
+  <article class="content-card clickable-card reveal" data-post-slug="${escapeHtml(slug)}">
     <div class="content-card-body">
       <p class="content-status">${escapeHtml(post.date)}</p>
-      <h3><a href="post.html?slug=${escapeHtml(slug)}">${escapeHtml(post.title)}</a></h3>
+      <h3>${escapeHtml(post.title)}</h3>
       <p>${escapeHtml(post.excerpt)}</p>
       <div class="tag-list">${renderTags(post.tags)}</div>
       <div class="content-links">
-        <a href="post.html?slug=${escapeHtml(slug)}">Read post</a>
+        <button type="button" data-post-slug="${escapeHtml(slug)}">Read post</button>
       </div>
     </div>
   </article>
@@ -205,6 +205,7 @@ const loadPosts = async () => {
       .sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
     target.innerHTML = posts.map(renderPostCard).join("") || `<p class="empty-state">No posts published yet.</p>`;
+    setupPostModal(posts);
     revealNewCards(target);
   } catch (error) {
     target.innerHTML = `<p class="empty-state">Posts could not be loaded.</p>`;
@@ -214,59 +215,81 @@ const loadPosts = async () => {
 loadProjects();
 loadPosts();
 
-const loadPost = async () => {
-  const target = document.querySelector("#post-view");
+const setupPostModal = (posts) => {
+  const modal = document.querySelector("#post-modal");
+  const modalContent = document.querySelector("#modal-content");
+  const blogList = document.querySelector("#blog-list");
+  let lastFocusedElement = null;
 
-  if (!target) {
+  if (!modal || !modalContent || !blogList) {
     return;
   }
 
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
+  const closeModal = () => {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
 
-  if (!slug) {
-    target.innerHTML = `
-      <p class="eyebrow">Blog</p>
-      <h1>Post not found.</h1>
-      <p class="hero-text">No post slug was provided.</p>
-      <div class="section-action"><a class="button ghost" href="blog.html">Back to blog</a></div>
-    `;
-    return;
-  }
+    if (lastFocusedElement) {
+      lastFocusedElement.focus();
+    }
+  };
 
-  try {
-    const response = await fetch("data/blog.json");
-    const data = await response.json();
-    const posts = (Array.isArray(data.posts) ? data.posts : []).filter((post) => post.published);
+  const openModal = (slug) => {
     const post = posts.find((item) => (item.slug || slugify(item.title)) === slug);
 
     if (!post) {
-      target.innerHTML = `
-        <p class="eyebrow">Blog</p>
-        <h1>Post not found.</h1>
-        <p class="hero-text">This post may be unpublished or removed.</p>
-        <div class="section-action"><a class="button ghost" href="blog.html">Back to blog</a></div>
-      `;
       return;
     }
 
-    document.title = `${post.title} | Maksim Babayan`;
-    target.innerHTML = `
-      <a class="back-link" href="blog.html">Back to blog</a>
+    lastFocusedElement = document.activeElement;
+    modalContent.innerHTML = `
       <header class="post-header">
         <p class="eyebrow">${escapeHtml(post.date)}</p>
-        <h1>${escapeHtml(post.title)}</h1>
+        <h1 id="modal-title">${escapeHtml(post.title)}</h1>
         <p class="hero-text">${escapeHtml(post.excerpt)}</p>
         <div class="tag-list">${renderTags(post.tags)}</div>
       </header>
       <div class="post-body">${markdownToHtml(post.body)}</div>
     `;
-  } catch (error) {
-    target.innerHTML = `<p class="empty-state">Post could not be loaded.</p>`;
-  }
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    modal.querySelector(".modal-close").focus();
+  };
+
+  blogList.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-post-slug]");
+
+    if (trigger) {
+      openModal(trigger.dataset.postSlug);
+    }
+  });
+
+  blogList.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    const trigger = event.target.closest("[data-post-slug]");
+
+    if (trigger) {
+      event.preventDefault();
+      openModal(trigger.dataset.postSlug);
+    }
+  });
+
+  modal.querySelectorAll("[data-modal-close]").forEach((trigger) => {
+    trigger.addEventListener("click", closeModal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modal.classList.contains("open")) {
+      closeModal();
+    }
+  });
 };
 
-loadPost();
 
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on("init", (user) => {
